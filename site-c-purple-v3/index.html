@@ -276,6 +276,7 @@ button, input, textarea, select { font-family: inherit; font-size: inherit; }
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   color: var(--primary);
   margin-bottom: 8px;
+  white-space: nowrap;
 }
 
 .metric-label {
@@ -933,6 +934,12 @@ button, input, textarea, select { font-family: inherit; font-size: inherit; }
 @keyframes panelFade {
   from { opacity: 0; transform: translateX(12px); }
   to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-ring-c {
+  0% { box-shadow: 0 8px 32px rgba(98,55,160,0.35), 0 0 0 0 rgba(98,55,160,0.4); }
+  70% { box-shadow: 0 8px 32px rgba(98,55,160,0.35), 0 0 0 20px rgba(98,55,160,0); }
+  100% { box-shadow: 0 8px 32px rgba(98,55,160,0.35), 0 0 0 0 rgba(98,55,160,0); }
 }
 
 .audience-content-panel h3 {
@@ -1865,55 +1872,62 @@ button, input, textarea, select { font-family: inherit; font-size: inherit; }
       <p class="section-subtitle">Four modalities flowing into a unified health intelligence engine</p>
     </div>
   </div>
-  <div class="pipeline-flow">
-    <!-- Node 1: Breath -->
-    <div class="pipeline-node fade-in">
-      <div class="pipeline-circle">
+  <div class="pipeline-hub fade-in" style="display:grid; grid-template-columns:1fr 1fr 1fr; grid-template-rows:auto auto auto; gap:32px; max-width:900px; margin:56px auto 0; padding:0 24px; position:relative; background:radial-gradient(circle at 50% 50%, rgba(98,55,160,0.12) 0%, rgba(98,55,160,0.06) 30%, transparent 65%);">
+    <!-- SVG connector lines -->
+    <svg style="position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:none;" viewBox="0 0 900 680" preserveAspectRatio="none">
+      <line x1="225" y1="170" x2="400" y2="300" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="20" to="0" dur="1.2s" repeatCount="indefinite"/></line>
+      <line x1="230" y1="175" x2="405" y2="305" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.25"><animate attributeName="stroke-dashoffset" from="0" to="20" dur="1.2s" repeatCount="indefinite"/></line>
+      <line x1="675" y1="170" x2="500" y2="300" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="20" to="0" dur="1.2s" repeatCount="indefinite"/></line>
+      <line x1="670" y1="175" x2="495" y2="305" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.25"><animate attributeName="stroke-dashoffset" from="0" to="20" dur="1.2s" repeatCount="indefinite"/></line>
+      <line x1="225" y1="510" x2="400" y2="380" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="20" to="0" dur="1.2s" repeatCount="indefinite"/></line>
+      <line x1="230" y1="505" x2="405" y2="375" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.25"><animate attributeName="stroke-dashoffset" from="0" to="20" dur="1.2s" repeatCount="indefinite"/></line>
+      <line x1="675" y1="510" x2="500" y2="380" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="20" to="0" dur="1.2s" repeatCount="indefinite"/></line>
+      <line x1="670" y1="505" x2="495" y2="375" stroke="#6237A0" stroke-width="2" stroke-dasharray="8 4" opacity="0.25"><animate attributeName="stroke-dashoffset" from="0" to="20" dur="1.2s" repeatCount="indefinite"/></line>
+    </svg>
+    <!-- Breath (top-left) -->
+    <div style="grid-column:1; grid-row:1; background:var(--white); border-radius:16px; padding:32px 24px; text-align:center; border:2px solid rgba(98,55,160,0.15); position:relative; z-index:2; box-shadow:var(--shadow);">
+      <div class="pipeline-circle" style="margin:0 auto 12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path d="M3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9"/>
           <path d="M12 8v4l2 2"/>
         </svg>
       </div>
       <div class="pipeline-label">Breath</div>
-      <div class="pipeline-sublabel">VOC biomarker capture</div>
+      <div class="pipeline-sublabel">VocxiHealth MyBreathPrint&reg;<br>Non-invasive VOC detection</div>
     </div>
-    <!-- Connector 1 -->
-    <div class="pipeline-connector">
-      <div class="pipeline-connector-line"><div class="pipeline-dot"></div></div>
-    </div>
-    <!-- Node 2: Blood -->
-    <div class="pipeline-node fade-in">
-      <div class="pipeline-circle">
+    <!-- Blood (top-right) -->
+    <div style="grid-column:3; grid-row:1; background:var(--white); border-radius:16px; padding:32px 24px; text-align:center; border:2px solid rgba(98,55,160,0.15); position:relative; z-index:2; box-shadow:var(--shadow);">
+      <div class="pipeline-circle" style="margin:0 auto 12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path d="M12 2c-4 5-7 8-7 12a7 7 0 0014 0c0-4-3-7-7-12z"/>
         </svg>
       </div>
       <div class="pipeline-label">Blood</div>
-      <div class="pipeline-sublabel">Molecular fingerprints</div>
+      <div class="pipeline-sublabel">Oncodea OncodeAi&trade;<br>Molecular fingerprinting</div>
     </div>
-    <!-- Connector 2 -->
-    <div class="pipeline-connector">
-      <div class="pipeline-connector-line"><div class="pipeline-dot"></div></div>
+    <!-- Person Health Center Hub -->
+    <div style="grid-column:2; grid-row:2; display:flex; align-items:center; justify-content:center; position:relative; z-index:2;">
+      <div style="width:220px; height:220px; border-radius:50%; background:var(--primary); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:white; box-shadow:0 8px 32px rgba(98,55,160,0.35); border:3px solid rgba(255,255,255,0.2); animation:pulse-ring-c 3s ease-out infinite;">
+        <img src="../logos/logo-c-purple-white-nav.png" alt="Person Health" style="height:36px; margin-bottom:8px; object-fit:contain;">
+        <span style="font-family:'Sora',sans-serif; font-weight:700; font-size:1.2rem; margin-bottom:2px;">Person Health</span>
+        <span style="font-size:0.85rem; opacity:0.8;">Integrated Health OS</span>
+      </div>
     </div>
-    <!-- Node 3: Data -->
-    <div class="pipeline-node fade-in">
-      <div class="pipeline-circle">
+    <!-- Data (bot-left) -->
+    <div style="grid-column:1; grid-row:3; background:var(--white); border-radius:16px; padding:32px 24px; text-align:center; border:2px solid rgba(98,55,160,0.15); position:relative; z-index:2; box-shadow:var(--shadow);">
+      <div class="pipeline-circle" style="margin:0 auto 12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <ellipse cx="12" cy="5" rx="9" ry="3"/>
           <path d="M21 12c0 1.66-4.03 3-9 3s-9-1.34-9-3"/>
           <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
         </svg>
       </div>
-      <div class="pipeline-label">Data</div>
-      <div class="pipeline-sublabel">Longitudinal records</div>
+      <div class="pipeline-label">Longitudinal Health Data</div>
+      <div class="pipeline-sublabel">Molecular Testing Labs<br>NGS, PGx, iFOB</div>
     </div>
-    <!-- Connector 3 -->
-    <div class="pipeline-connector">
-      <div class="pipeline-connector-line"><div class="pipeline-dot"></div></div>
-    </div>
-    <!-- Node 4: AI -->
-    <div class="pipeline-node fade-in">
-      <div class="pipeline-circle">
+    <!-- AI Engine (bot-right) -->
+    <div style="grid-column:3; grid-row:3; background:var(--white); border-radius:16px; padding:32px 24px; text-align:center; border:2px solid rgba(98,55,160,0.15); position:relative; z-index:2; box-shadow:var(--shadow);">
+      <div class="pipeline-circle" style="margin:0 auto 12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <rect x="4" y="4" width="16" height="16" rx="2"/>
           <path d="M9 9h6M9 12h6M9 15h4"/>
@@ -1921,11 +1935,8 @@ button, input, textarea, select { font-family: inherit; font-size: inherit; }
         </svg>
       </div>
       <div class="pipeline-label">AI Engine</div>
-      <div class="pipeline-sublabel">Pattern recognition</div>
+      <div class="pipeline-sublabel">RealBusiness.AI<br>Intelligence layer</div>
     </div>
-  </div>
-  <div class="pipeline-output fade-in">
-    <div class="pipeline-badge">Health OS</div>
   </div>
 </section>
 
