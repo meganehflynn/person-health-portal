@@ -647,6 +647,44 @@
       50% { border-color: var(--accent); box-shadow: 0 4px 20px rgba(5,209,110,0.25); }
     }
 
+    @keyframes dash-flow {
+      0% { stroke-dashoffset: 20; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes dash-flow-reverse {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 20; }
+    }
+
+    .mod-connectors {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .mod-connectors svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .mod-connector-line {
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-dasharray: 8 4;
+      opacity: 0.5;
+      animation: dash-flow 1.2s linear infinite;
+    }
+
+    .mod-connector-line-reverse {
+      stroke: rgba(2,70,83,0.4);
+      stroke-width: 2;
+      stroke-dasharray: 8 4;
+      opacity: 0.4;
+      animation: dash-flow-reverse 1.2s linear infinite;
+    }
+
     .mod-center {
       grid-column: 2;
       grid-row: 2;
@@ -880,6 +918,7 @@
       color: var(--accent);
       line-height: 1;
       margin-bottom: 8px;
+      white-space: nowrap;
     }
 
     .comp-stat h4 {
@@ -1905,12 +1944,13 @@
           <span class="platform-card-tag">VERITY Study Active</span>
         </div>
         <div class="platform-card fade-in">
-          <div class="platform-card-logo">
-            <svg width="160" height="40" viewBox="0 0 220 55" xmlns="http://www.w3.org/2000/svg">
-              <text x="0" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#024653">Real</text>
-              <text x="58" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#05D16E">Business</text>
-              <rect x="164" y="14" rx="6" ry="6" width="50" height="30" fill="#024653"/>
-              <text x="172" y="35" font-family="Inter,sans-serif" font-size="19" font-weight="700" fill="white">.AI</text>
+          <div class="platform-card-logo" style="display:flex; align-items:center; gap:10px;">
+            <img src="https://realbusiness.ai/favicon.ico" alt="" style="width:36px; height:36px; border-radius:6px;">
+            <svg width="170" height="36" viewBox="0 0 230 45" xmlns="http://www.w3.org/2000/svg">
+              <text x="0" y="32" font-family="'Space Grotesk',sans-serif" font-size="28" font-weight="700" fill="#024653">Real</text>
+              <text x="62" y="32" font-family="'Space Grotesk',sans-serif" font-size="28" font-weight="700" fill="#024653">Business</text>
+              <rect x="182" y="10" rx="5" ry="5" width="44" height="28" fill="#024653"/>
+              <text x="188" y="31" font-family="'Space Grotesk',sans-serif" font-size="18" font-weight="700" fill="white">.AI</text>
             </svg>
           </div>
           <h3>RealBusiness.AI</h3>
@@ -1931,7 +1971,28 @@
         <h2 class="section-title">Integrated Multi-Modal Architecture</h2>
         <p class="section-subtitle">Four distinct diagnostic modalities converging into a single Health OS for comprehensive patient insight.</p>
       </div>
-      <div class="modalities-hub">
+      <div class="modalities-hub" style="position:relative;">
+        <!-- Bi-directional connector lines -->
+        <div class="mod-connectors">
+          <svg viewBox="0 0 900 700" preserveAspectRatio="none">
+            <!-- Top-left to center (outward) -->
+            <line class="mod-connector-line" x1="225" y1="180" x2="400" y2="310"/>
+            <!-- Top-left to center (inward) -->
+            <line class="mod-connector-line-reverse" x1="230" y1="185" x2="405" y2="315"/>
+            <!-- Top-right to center (outward) -->
+            <line class="mod-connector-line" x1="675" y1="180" x2="500" y2="310"/>
+            <!-- Top-right to center (inward) -->
+            <line class="mod-connector-line-reverse" x1="670" y1="185" x2="495" y2="315"/>
+            <!-- Bot-left to center (outward) -->
+            <line class="mod-connector-line" x1="225" y1="520" x2="400" y2="390"/>
+            <!-- Bot-left to center (inward) -->
+            <line class="mod-connector-line-reverse" x1="230" y1="515" x2="405" y2="385"/>
+            <!-- Bot-right to center (outward) -->
+            <line class="mod-connector-line" x1="675" y1="520" x2="500" y2="390"/>
+            <!-- Bot-right to center (inward) -->
+            <line class="mod-connector-line-reverse" x1="670" y1="515" x2="495" y2="385"/>
+          </svg>
+        </div>
         <div class="mod-spoke top-left fade-in">
           <div class="mod-spoke-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
