@@ -1,0 +1,17 @@
+# Source documents (large files)
+*.pdf
+*.pptx
+
+# Old site versions
+site-a-green/
+site-a-green-v2/
+site-b-blue/
+site-b-blue-v2/
+site-c-purple/
+site-c-purple-v2/
+
+# Discovery artifacts (markdown - referenced from presentation but raw .md files)
+# Keep these — needed for the MD viewer
+
+# macOS
+.DS_Store

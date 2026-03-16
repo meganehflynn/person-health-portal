@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Person Health | Enterprise Diagnostic Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS CUSTOM PROPERTIES ===== */
+:root {
+  --primary: #6237A0;
+  --dark: #28104E;
+  --light: #f5f0fa;
+  --accent-blue: #E5ECFE;
+  --white: #ffffff;
+  --text: #2a2a3a;
+  --text-muted: #6b6b80;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(40,16,78,0.08);
+  --shadow-lg: 0 12px 48px rgba(40,16,78,0.12);
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  line-height: 1.6;
+  background: var(--white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sora', sans-serif;
+  line-height: 1.2;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+button, input, textarea, select { font-family: inherit; font-size: inherit; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 16px 0;
+  transition: var(--transition);
+  background: transparent;
+}
+
+.navbar.scrolled {
+  background: rgba(255,255,255,0.97);
+  box-shadow: 0 2px 20px rgba(40,16,78,0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo-img {
+  transition: var(--transition);
+}
+
+.nav-logo-white {
+  display: block;
+}
+
+.nav-logo-color {
+  display: none;
+}
+
+.navbar.scrolled .nav-logo-white {
+  display: none;
+}
+
+.navbar.scrolled .nav-logo-color {
+  display: block;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav-links a {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.85);
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.navbar.scrolled .nav-links a {
+  color: var(--text);
+}
+
+.nav-links a:hover {
+  color: var(--white);
+}
+
+.navbar.scrolled .nav-links a:hover {
+  color: var(--primary);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.nav-toggle span {
+  width: 24px;
+  height: 2px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+.navbar.scrolled .nav-toggle span {
+  background: var(--dark);
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(40,16,78,0.9), rgba(98,55,160,0.85)), url('https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=1920&q=80') center/cover no-repeat;
+  overflow: hidden;
+}
+
+.hero-grid-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,255,255,0.07) 59px, rgba(255,255,255,0.07) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,0.07) 59px, rgba(255,255,255,0.07) 60px);
+  pointer-events: none;
+}
+
+.hero-floating-icon {
+  position: absolute;
+  z-index: 1;
+  opacity: 0.05;
+  color: white;
+  pointer-events: none;
+}
+
+.hero-floating-icon:nth-child(2) { top: 12%; left: 8%; width: 80px; }
+.hero-floating-icon:nth-child(3) { top: 55%; left: 82%; width: 60px; }
+.hero-floating-icon:nth-child(4) { top: 20%; right: 12%; width: 100px; }
+.hero-floating-icon:nth-child(5) { bottom: 18%; left: 22%; width: 50px; }
+.hero-floating-icon:nth-child(6) { top: 68%; left: 48%; width: 70px; }
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 860px;
+  padding: 0 24px;
+}
+
+.hero-content h1 {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 24px;
+  letter-spacing: -1px;
+}
+
+.hero-content p {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  color: rgba(255,255,255,0.8);
+  max-width: 640px;
+  margin: 0 auto 40px;
+  font-weight: 400;
+}
+
+.btn-hero {
+  display: inline-block;
+  padding: 18px 40px;
+  background: var(--white);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.btn-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+/* ===== METRICS DASHBOARD ===== */
+.metrics {
+  padding: 0;
+  position: relative;
+  z-index: 10;
+  margin-top: -60px;
+}
+
+.metrics-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 36px 0;
+  box-shadow: var(--shadow-lg);
+}
+
+.metric-widget {
+  text-align: center;
+  padding: 20px 24px;
+  position: relative;
+}
+
+.metric-widget:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 15%;
+  height: 70%;
+  width: 1px;
+  background: rgba(98,55,160,0.1);
+}
+
+.metric-value {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.metric-label {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+.metric-bar {
+  width: 80%;
+  height: 8px;
+  background: rgba(98,55,160,0.12);
+  border-radius: 3px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.metric-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+  background: linear-gradient(90deg, var(--primary), #9b6ed8);
+  width: 0;
+}
+
+.metric-bar-fill.animated {
+  width: var(--fill);
+}
+
+.metric-circular {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.metric-circular svg {
+  transform: rotate(-90deg);
+}
+
+.metric-circular-bg {
+  stroke: rgba(98,55,160,0.08);
+}
+
+.metric-circular-fill {
+  stroke: var(--primary);
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.metric-circular-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* ===== SECTION HEADERS ===== */
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.section-label {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--primary);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ===== ADVANTAGES MASONRY ===== */
+.advantages {
+  padding: 100px 0;
+  background: var(--light);
+}
+
+.masonry {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+  columns: 2;
+  column-gap: 32px;
+}
+
+.masonry-card {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 32px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.masonry-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.masonry-card-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.masonry-card-body {
+  padding: 32px;
+}
+
+.masonry-card-body h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+
+.masonry-card-body p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.masonry-card--tall .masonry-card-img {
+  height: 280px;
+}
+
+.masonry-card--span {
+  column-span: all;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== PLATFORM ACCORDION ===== */
+.platform {
+  padding: 100px 0;
+  background: var(--white);
+}
+
+.platform-layout {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  gap: 48px;
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.accordion-item {
+  border: 1px solid rgba(98,55,160,0.12);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.accordion-item.active {
+  border-color: var(--primary);
+  box-shadow: 0 4px 20px rgba(98,55,160,0.1);
+}
+
+.accordion-header {
+  padding: 20px 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+  transition: var(--transition);
+  user-select: none;
+}
+
+.accordion-item.active .accordion-header {
+  background: var(--light);
+}
+
+.accordion-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.accordion-header-left img {
+  height: 48px;
+  width: auto;
+}
+
+.accordion-header-left .acc-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--dark);
+}
+
+.accordion-chevron {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.accordion-item.active .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.accordion-item.active .accordion-body {
+  max-height: 500px;
+}
+
+.accordion-body-inner {
+  padding: 0 24px 24px;
+}
+
+.accordion-body-inner p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+
+.accordion-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.accordion-feature-tag {
+  padding: 8px 16px;
+  background: var(--light);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary);
+  border: 1px solid rgba(98,55,160,0.1);
+}
+
+.accordion-item.active .accordion-feature-tag {
+  background: var(--white);
+}
+
+.platform-diagram {
+  background: var(--light);
+  border-radius: var(--radius);
+  padding: 40px;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(98,55,160,0.06);
+}
+
+.diagram-content {
+  text-align: center;
+  display: none;
+  animation: diagramFade 0.4s ease;
+}
+
+.diagram-content.active {
+  display: block;
+}
+
+@keyframes diagramFade {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.diagram-icon {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 20px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(98,55,160,0.25);
+}
+
+.diagram-icon svg {
+  width: 48px;
+  height: 48px;
+  color: white;
+}
+
+.diagram-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
+
+.diagram-desc {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 280px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.diagram-nodes {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.diagram-node {
+  width: 60px;
+  height: 60px;
+  background: var(--white);
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  font-family: 'Sora', sans-serif;
+}
+
+/* ===== MODALITIES PIPELINE ===== */
+.pipeline {
+  padding: 100px 0;
+  background: var(--light);
+}
+
+.pipeline-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  max-width: 1000px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+  position: relative;
+}
+
+.pipeline-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
+.pipeline-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  position: relative;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.pipeline-circle:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-lg);
+}
+
+.pipeline-circle svg {
+  width: 42px;
+  height: 42px;
+  color: var(--primary);
+}
+
+.pipeline-label {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--dark);
+  margin-bottom: 4px;
+}
+
+.pipeline-sublabel {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 120px;
+}
+
+.pipeline-connector {
+  flex: 1;
+  height: 3px;
+  min-width: 60px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 50px;
+}
+
+.pipeline-connector-line {
+  width: 100%;
+  height: 100%;
+  border-top: 3px dashed rgba(98,55,160,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.pipeline-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  border-radius: 50%;
+  position: absolute;
+  top: -7px;
+  box-shadow: 0 0 8px rgba(98,55,160,0.5);
+  left: 0;
+  animation: pipelineDot 2.5s linear infinite;
+}
+
+@keyframes pipelineDot {
+  0% { left: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: calc(100% - 12px); opacity: 0; }
+}
+
+.pipeline-connector:nth-child(4) .pipeline-dot { animation-delay: 0.8s; }
+.pipeline-connector:nth-child(6) .pipeline-dot { animation-delay: 1.6s; }
+
+.pipeline-output {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.pipeline-badge {
+  display: inline-block;
+  padding: 14px 36px;
+  background: linear-gradient(135deg, var(--primary), #9b6ed8);
+  color: var(--white);
+  border-radius: 28px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 6px 24px rgba(98,55,160,0.3);
+  letter-spacing: 0.5px;
+}
+
+/* ===== DIAGNOSTIC FAILURES ===== */
+.failures {
+  padding: 100px 0;
+  background: var(--dark);
+  color: var(--white);
+}
+
+.failures .section-label {
+  color: rgba(255,255,255,0.4);
+}
+
+.failures .section-title {
+  color: var(--white);
+}
+
+.failures-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+  max-width: 1100px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+}
+
+.failure-item {
+  text-align: center;
+  padding: 28px 16px;
+}
+
+.failure-number {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 3.2rem;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #9b6ed8, #E5ECFE);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.failure-text {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.7;
+}
+
+.failure-callout {
+  max-width: 700px;
+  margin: 56px auto 0;
+  padding: 24px 32px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.failure-callout strong {
+  color: #E5ECFE;
+}
+
+/* ===== COMPETITIVE ADVANTAGE ===== */
+.competitive {
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--primary);
+}
+
+.competitive-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,255,255,0.06) 59px, rgba(255,255,255,0.06) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,0.06) 59px, rgba(255,255,255,0.06) 60px);
+  pointer-events: none;
+}
+
+.competitive-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.competitive-inner h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  color: var(--white);
+  max-width: 780px;
+  margin: 0 auto 40px;
+  line-height: 1.5;
+}
+
+.competitive-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.comp-badge {
+  padding: 16px 32px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 28px;
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ===== AUDIENCE SIDE-NAV ===== */
+.audience {
+  padding: 100px 0;
+  background: var(--white);
+}
+
+.audience-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.audience-nav {
+  position: sticky;
+  top: 120px;
+  align-self: start;
+}
+
+.audience-nav-item {
+  display: block;
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--text-muted);
+  transition: var(--transition);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  user-select: none;
+}
+
+.audience-nav-item:hover {
+  color: var(--primary);
+  background: var(--light);
+}
+
+.audience-nav-item.active {
+  border-left-color: var(--primary);
+  color: var(--primary);
+  background: var(--light);
+  font-weight: 600;
+}
+
+.audience-content-panel {
+  display: none;
+  animation: panelFade 0.35s ease;
+}
+
+.audience-content-panel.active {
+  display: block;
+}
+
+@keyframes panelFade {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.audience-content-panel h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 16px;
+}
+
+.audience-content-panel p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.audience-content-panel ul {
+  margin-bottom: 24px;
+}
+
+.audience-content-panel li {
+  padding: 8px 0;
+  padding-left: 22px;
+  position: relative;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.audience-content-panel li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 16px;
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 16px 36px;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.btn-primary:hover {
+  background: var(--dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(40,16,78,0.2);
+}
+
+/* ===== ABOUT ===== */
+.about {
+  padding: 0;
+  background: var(--white);
+}
+
+.about-hero {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(40,16,78,0.82);
+}
+
+.about-hero-quote {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 720px;
+}
+
+.about-hero-quote blockquote {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: var(--white);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.about-block h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
+
+.about-block p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.about-partners {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.about-partner-tag {
+  padding: 8px 18px;
+  background: var(--light);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary);
+  border: 1px solid rgba(98,55,160,0.08);
+}
+
+/* ===== CONTACT ===== */
+.contact {
+  padding: 100px 0;
+  background: var(--light);
+}
+
+.contact-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.contact-inner h2 {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
+
+.contact-inner > p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.contact-pills {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.contact-pill {
+  padding: 12px 24px;
+  border: 2px solid var(--primary);
+  border-radius: 24px;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--primary);
+  cursor: pointer;
+  background: transparent;
+  transition: var(--transition);
+}
+
+.contact-pill:hover,
+.contact-pill.active {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.contact-form {
+  text-align: left;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(98,55,160,0.15);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--text);
+  transition: var(--transition);
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(98,55,160,0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 18px;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.05rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.btn-submit:hover {
+  background: var(--dark);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 64px 0 32px;
+  background: var(--dark);
+  color: rgba(255,255,255,0.65);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.footer-brand p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  max-width: 260px;
+  margin-top: 4px;
+}
+
+.footer-col h4 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 0.9rem;
+  padding: 4px 0;
+  color: rgba(255,255,255,0.55);
+  transition: var(--transition);
+}
+
+.footer-col a:hover {
+  color: var(--white);
+}
+
+.footer-bottom {
+  max-width: 1100px;
+  margin: 40px auto 0;
+  padding: 24px 24px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.footer-bottom a {
+  margin-left: 24px;
+  color: rgba(255,255,255,0.5);
+  transition: var(--transition);
+}
+
+.footer-bottom a:hover {
+  color: var(--white);
+}
+
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* ===== ANIMATIONS ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .platform-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-diagram {
+    min-height: 260px;
+  }
+
+  .audience-layout {
+    grid-template-columns: 200px 1fr;
+    gap: 32px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .failures-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--white);
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    gap: 0;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a {
+    color: var(--text) !important;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(98,55,160,0.06);
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 24px 0;
+  }
+
+  .metric-widget:nth-child(2)::after {
+    display: none;
+  }
+
+  .masonry {
+    columns: 1;
+  }
+
+  .masonry-card--span {
+    column-span: none;
+  }
+
+  .pipeline-flow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pipeline-connector {
+    width: 3px;
+    height: 40px;
+    min-width: unset;
+    margin-bottom: 0;
+  }
+
+  .pipeline-connector-line {
+    height: 100%;
+    width: 100%;
+    border-top: none;
+    border-left: 3px dashed rgba(98,55,160,0.3);
+  }
+
+  .pipeline-dot {
+    animation: pipelineDotV 2.5s linear infinite;
+    left: -3px !important;
+    top: 0;
+  }
+
+  @keyframes pipelineDotV {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: calc(100% - 8px); opacity: 0; }
+  }
+
+  .failures-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .audience-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .audience-nav {
+    position: static;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .audience-nav-item {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+  }
+
+  .audience-nav-item.active {
+    border-bottom-color: var(--primary);
+    border-left-color: transparent;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .about-hero {
+    height: 300px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .footer-bottom a {
+    margin-left: 0;
+    margin: 0 12px;
+  }
+
+  .competitive-badges {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-pills {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .failures-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-widget::after {
+    display: none !important;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+}
+
+/* ===== LEADERSHIP & ADVISORY ===== */
+.leadership {
+  padding: 100px 0;
+  background: var(--light);
+}
+
+.leadership-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto 64px;
+  padding: 0 24px;
+}
+
+.leader-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border-left: 4px solid var(--primary);
+  transition: var(--transition);
+}
+
+.leader-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.leader-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.leader-card-body {
+  padding: 28px;
+}
+
+.leader-card-body h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-family: 'Sora', sans-serif;
+}
+
+.leader-card-body p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.advisory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.advisory-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px 28px;
+  text-align: center;
+  border-top: 3px solid var(--primary);
+  transition: var(--transition);
+}
+
+.advisory-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.advisory-card h4 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.advisory-card p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.advisory-label {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--dark);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 1024px) {
+  .leadership-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .advisory-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .leadership-grid {
+    grid-template-columns: 1fr;
+  }
+  .advisory-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="nav-logo">
+      <img src="../logos/logo-c-purple-white-nav.png" alt="Person Health" class="nav-logo-img nav-logo-white" style="height:40px;">
+      <img src="../logos/logo-c-purple-nav.png" alt="Person Health" class="nav-logo-img nav-logo-color" style="height:40px;">
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#platform">Platform</a>
+      <a href="#pipeline">Science</a>
+      <a href="#audience">Partners</a>
+      <a href="#about">About</a>
+      <a href="#leadership">Leadership</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-grid-overlay"></div>
+  <!-- Floating brandmark icons -->
+  <div class="hero-floating-icon">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="12" r="6" stroke="currentColor" stroke-width="2.5" fill="none"/><line x1="30" y1="18" x2="30" y2="45" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18" y1="26" x2="42" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="22" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="38" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+  </div>
+  <div class="hero-floating-icon">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="12" r="6" stroke="currentColor" stroke-width="2.5" fill="none"/><line x1="30" y1="18" x2="30" y2="45" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18" y1="26" x2="42" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="22" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="38" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+  </div>
+  <div class="hero-floating-icon">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="12" r="6" stroke="currentColor" stroke-width="2.5" fill="none"/><line x1="30" y1="18" x2="30" y2="45" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18" y1="26" x2="42" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="22" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="38" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+  </div>
+  <div class="hero-floating-icon">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="12" r="6" stroke="currentColor" stroke-width="2.5" fill="none"/><line x1="30" y1="18" x2="30" y2="45" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18" y1="26" x2="42" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="22" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="38" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+  </div>
+  <div class="hero-floating-icon">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="12" r="6" stroke="currentColor" stroke-width="2.5" fill="none"/><line x1="30" y1="18" x2="30" y2="45" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18" y1="26" x2="42" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="22" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="45" x2="38" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+  </div>
+  <div class="hero-content">
+    <h1>Detect Disease Before Symptoms. Understand Health for Life.</h1>
+    <p>Every day, diseases go undetected because our tools aren't good enough. We're changing that — with the first platform that sees what others miss.</p>
+    <button class="btn-hero" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Request Partnership Discussion</button>
+  </div>
+</section>
+
+<!-- ===== METRICS DASHBOARD ===== -->
+<section class="metrics">
+  <div class="metrics-inner">
+    <div class="metrics-grid" id="metricsGrid" style="background: var(--white) url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80') center/cover no-repeat; background-blend-mode: overlay; background-color: rgba(255,255,255,0.95);">
+      <div class="metric-widget fade-in">
+        <div class="metric-value">$40-75B</div>
+        <div class="metric-label">Total Addressable Market</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="--fill: 85%"></div></div>
+      </div>
+      <div class="metric-widget fade-in">
+        <div class="metric-value">43+</div>
+        <div class="metric-label">Patents Filed</div>
+        <div class="metric-circular">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <circle class="metric-circular-bg" cx="32" cy="32" r="27" fill="none" stroke-width="5"/>
+            <circle class="metric-circular-fill" cx="32" cy="32" r="27" fill="none" stroke-width="5" stroke-dasharray="169.65" stroke-dashoffset="169.65" stroke-linecap="round"/>
+          </svg>
+          <span class="metric-circular-text">86%</span>
+        </div>
+      </div>
+      <div class="metric-widget fade-in">
+        <div class="metric-value">15%+</div>
+        <div class="metric-label">Market CAGR</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="--fill: 55%"></div></div>
+      </div>
+      <div class="metric-widget fade-in">
+        <div class="metric-value">75%+</div>
+        <div class="metric-label">Gross Margins</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="--fill: 75%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ADVANTAGES MASONRY ===== -->
+<section class="advantages" id="advantages">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Strategic Advantages</span>
+      <h2 class="section-title">Why Person Health Wins</h2>
+      <p class="section-subtitle">Five compounding advantages that create an unassailable market position</p>
+    </div>
+  </div>
+  <div class="masonry">
+    <div class="masonry-card masonry-card--tall fade-in">
+      <img class="masonry-card-img" src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80" alt="Multi-modal diagnostics visualization">
+      <div class="masonry-card-body">
+        <h3>Multi-Modal Diagnostics</h3>
+        <p>Combining breath biomarkers and blood molecular fingerprinting into a single unified platform. No other company integrates these modalities with longitudinal AI analysis at this scale.</p>
+      </div>
+    </div>
+    <div class="masonry-card fade-in">
+      <div class="masonry-card-body">
+        <h3>Clinical Validation</h3>
+        <p>Partnerships with Mayo Clinic, Cleveland Clinic, MD Anderson, and Baylor. Active VERITY Study. Real clinical evidence backing every claim.</p>
+      </div>
+    </div>
+    <div class="masonry-card fade-in">
+      <div class="masonry-card-body">
+        <h3>IP Protection</h3>
+        <p>43+ patents filed across breath diagnostics, molecular analysis, and AI/ML algorithms. A defensible moat that deepens with every data point collected.</p>
+      </div>
+    </div>
+    <div class="masonry-card masonry-card--tall fade-in">
+      <img class="masonry-card-img" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80" alt="Technology infrastructure">
+      <div class="masonry-card-body">
+        <h3>Lab Infrastructure</h3>
+        <p>Purpose-built CLIA labs with scalable capacity. End-to-end control from sample collection to AI-powered results. No dependency on third-party infrastructure.</p>
+      </div>
+    </div>
+    <div class="masonry-card masonry-card--span fade-in">
+      <div class="masonry-card-body" style="text-align: center; padding: 36px 32px;">
+        <h3>Early Detection Engine</h3>
+        <p>Longitudinal data creates compounding intelligence. The more patients we see, the smarter the platform becomes. This is the flywheel that competitors cannot replicate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PLATFORM ACCORDION ===== -->
+<section class="platform" id="platform">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Platform Architecture</span>
+      <h2 class="section-title">Three Engines, One Platform</h2>
+      <p class="section-subtitle">An integrated diagnostic intelligence system powered by complementary technologies</p>
+    </div>
+  </div>
+  <div class="platform-layout">
+    <div class="accordion-wrapper">
+      <!-- VocxiHealth -->
+      <div class="accordion-item active" data-panel="vocxi">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-header-left">
+            <img src="https://vocxihealth.com/wp-content/uploads/VOC2127_Vocxi_Logo_2Color_Lig.png" alt="VocxiHealth">
+            <span class="acc-title">VocxiHealth</span>
+          </div>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Clinically validated breath diagnostics with results in under one minute. 43+ patents protect the proprietary VOC detection technology. Non-invasive, rapid, scalable screening at the point of care.</p>
+            <div class="accordion-features">
+              <span class="accordion-feature-tag">Breath Analysis</span>
+              <span class="accordion-feature-tag">43+ Patents</span>
+              <span class="accordion-feature-tag">Under 1 Minute</span>
+              <span class="accordion-feature-tag">Non-Invasive</span>
+              <span class="accordion-feature-tag">Point-of-Care</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Oncodea -->
+      <div class="accordion-item" data-panel="oncodea">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-header-left">
+            <img src="https://oncodea.com/wp-content/uploads/2024/12/Screen-Shot-2020-05-14-at-11.51.34-AM.png" alt="Oncodea">
+            <span class="acc-title">Oncodea</span>
+          </div>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Blood molecular fingerprinting powered by machine learning. ML-powered cancer detection through advanced liquid biopsy analysis. The VERITY Study is actively validating our approach across multiple cancer types.</p>
+            <div class="accordion-features">
+              <span class="accordion-feature-tag">Liquid Biopsy</span>
+              <span class="accordion-feature-tag">ML-Powered</span>
+              <span class="accordion-feature-tag">VERITY Study</span>
+              <span class="accordion-feature-tag">Multi-Cancer</span>
+              <span class="accordion-feature-tag">Blood Analysis</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- RealBusiness.AI -->
+      <div class="accordion-item" data-panel="realbiz">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-header-left">
+            <svg width="120" height="32" viewBox="0 0 220 55" xmlns="http://www.w3.org/2000/svg">
+              <text x="0" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#6237A0">Real</text>
+              <text x="58" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#6237A0">Business</text>
+              <rect x="164" y="14" rx="6" ry="6" width="50" height="30" fill="#6237A0"/>
+              <text x="172" y="35" font-family="Inter,sans-serif" font-size="19" font-weight="700" fill="white">.AI</text>
+            </svg>
+            <span class="acc-title">RealBusiness.AI</span>
+          </div>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p>Agentic AI platform purpose-built for healthcare operations. Scalable architecture designed for enterprise deployment. HIPAA and GDPR compliant from the ground up, ensuring data security at every layer.</p>
+            <div class="accordion-features">
+              <span class="accordion-feature-tag">Agentic AI</span>
+              <span class="accordion-feature-tag">HIPAA Compliant</span>
+              <span class="accordion-feature-tag">GDPR Compliant</span>
+              <span class="accordion-feature-tag">Scalable</span>
+              <span class="accordion-feature-tag">Enterprise-Ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagram Panel -->
+    <div class="platform-diagram">
+      <div class="diagram-content active" id="diagram-vocxi">
+        <div class="diagram-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        <div class="diagram-title">Breath VOC Analysis</div>
+        <div class="diagram-desc">Volatile organic compounds analyzed through proprietary sensor arrays and AI classification</div>
+        <div class="diagram-nodes">
+          <div class="diagram-node">VOC</div>
+          <div class="diagram-node">AI</div>
+          <div class="diagram-node">Dx</div>
+        </div>
+      </div>
+      <div class="diagram-content" id="diagram-oncodea">
+        <div class="diagram-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v4m0 12v4m-10-10h4m12 0h4"/>
+            <path d="M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+          </svg>
+        </div>
+        <div class="diagram-title">Molecular Fingerprinting</div>
+        <div class="diagram-desc">Blood-based biomarkers processed through ML models for multi-cancer early detection</div>
+        <div class="diagram-nodes">
+          <div class="diagram-node">Blood</div>
+          <div class="diagram-node">ML</div>
+          <div class="diagram-node">Dx</div>
+        </div>
+      </div>
+      <div class="diagram-content" id="diagram-realbiz">
+        <div class="diagram-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+            <path d="M7 8h2m2 0h2m2 0h2M7 11h10"/>
+          </svg>
+        </div>
+        <div class="diagram-title">Agentic AI Operations</div>
+        <div class="diagram-desc">Intelligent automation layer connecting diagnostics to clinical workflows at enterprise scale</div>
+        <div class="diagram-nodes">
+          <div class="diagram-node">Data</div>
+          <div class="diagram-node">Agent</div>
+          <div class="diagram-node">Ops</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MODALITIES PIPELINE ===== -->
+<section class="pipeline" id="pipeline">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Diagnostic Modalities</span>
+      <h2 class="section-title">The Intelligence Pipeline</h2>
+      <p class="section-subtitle">Four modalities flowing into a unified health intelligence engine</p>
+    </div>
+  </div>
+  <div class="pipeline-flow">
+    <!-- Node 1: Breath -->
+    <div class="pipeline-node fade-in">
+      <div class="pipeline-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9"/>
+          <path d="M12 8v4l2 2"/>
+        </svg>
+      </div>
+      <div class="pipeline-label">Breath</div>
+      <div class="pipeline-sublabel">VOC biomarker capture</div>
+    </div>
+    <!-- Connector 1 -->
+    <div class="pipeline-connector">
+      <div class="pipeline-connector-line"><div class="pipeline-dot"></div></div>
+    </div>
+    <!-- Node 2: Blood -->
+    <div class="pipeline-node fade-in">
+      <div class="pipeline-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 2c-4 5-7 8-7 12a7 7 0 0014 0c0-4-3-7-7-12z"/>
+        </svg>
+      </div>
+      <div class="pipeline-label">Blood</div>
+      <div class="pipeline-sublabel">Molecular fingerprints</div>
+    </div>
+    <!-- Connector 2 -->
+    <div class="pipeline-connector">
+      <div class="pipeline-connector-line"><div class="pipeline-dot"></div></div>
+    </div>
+    <!-- Node 3: Data -->
+    <div class="pipeline-node fade-in">
+      <div class="pipeline-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/>
+          <path d="M21 12c0 1.66-4.03 3-9 3s-9-1.34-9-3"/>
+          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+        </svg>
+      </div>
+      <div class="pipeline-label">Data</div>
+      <div class="pipeline-sublabel">Longitudinal records</div>
+    </div>
+    <!-- Connector 3 -->
+    <div class="pipeline-connector">
+      <div class="pipeline-connector-line"><div class="pipeline-dot"></div></div>
+    </div>
+    <!-- Node 4: AI -->
+    <div class="pipeline-node fade-in">
+      <div class="pipeline-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="4" y="4" width="16" height="16" rx="2"/>
+          <path d="M9 9h6M9 12h6M9 15h4"/>
+          <circle cx="18" cy="6" r="3" fill="currentColor" opacity="0.3"/>
+        </svg>
+      </div>
+      <div class="pipeline-label">AI Engine</div>
+      <div class="pipeline-sublabel">Pattern recognition</div>
+    </div>
+  </div>
+  <div class="pipeline-output fade-in">
+    <div class="pipeline-badge">Health OS</div>
+  </div>
+</section>
+
+<!-- ===== FIVE DIAGNOSTIC FAILURES ===== -->
+<section class="failures" id="failures">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">The Problem</span>
+      <h2 class="section-title">Five Diagnostic Failures We Solve</h2>
+    </div>
+    <div class="failures-grid">
+      <div class="failure-item fade-in">
+        <div class="failure-number">1</div>
+        <div class="failure-text">Diseases detected too late for effective treatment. Reactive care instead of proactive detection.</div>
+      </div>
+      <div class="failure-item fade-in">
+        <div class="failure-number">2</div>
+        <div class="failure-text">Fragmented diagnostics across disconnected systems, labs, and providers. No unified view.</div>
+      </div>
+      <div class="failure-item fade-in">
+        <div class="failure-number">3</div>
+        <div class="failure-text">Invasive procedures that deter patients from screening. Low compliance, low detection.</div>
+      </div>
+      <div class="failure-item fade-in">
+        <div class="failure-number">4</div>
+        <div class="failure-text">Single-modality testing that misses the full picture. One biomarker is never enough.</div>
+      </div>
+      <div class="failure-item fade-in">
+        <div class="failure-number">5</div>
+        <div class="failure-text">No longitudinal intelligence. Point-in-time snapshots cannot reveal disease trajectories.</div>
+      </div>
+    </div>
+    <div class="failure-callout fade-in">
+      The urgency: <strong>9.4 million missed cancer screenings post-COVID</strong>. Early detection infrastructure is not optional — it is critical.
+    </div>
+    <div class="failure-callout fade-in" style="margin-top: 24px; font-style: italic; border-left: 3px solid #9b6ed8;">
+      Behind every statistic is a person. A parent. A child. Person Health exists to change these numbers — one breath, one test, one life at a time.
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPETITIVE ADVANTAGE ===== -->
+<section class="competitive" style="background: url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&q=80') center/cover no-repeat; position: relative;">
+  <div style="position:absolute; inset:0; background:rgba(98,55,160,0.92);"></div>
+  <div class="competitive-grid-overlay"></div>
+  <div class="competitive-inner fade-in">
+    <h2>The only platform combining breath + blood + lab infrastructure + AI + a scalable platform designed for large patient populations.</h2>
+    <div class="competitive-badges">
+      <div class="comp-badge">43+ Patents</div>
+      <div class="comp-badge">Compounding Data Moat</div>
+      <div class="comp-badge">Multi-Modal Integration</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AUDIENCE SIDE-NAV ===== -->
+<section class="audience" id="audience">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Partner With Us</span>
+      <h2 class="section-title">Built for Every Stakeholder</h2>
+    </div>
+  </div>
+  <div class="audience-layout">
+    <nav class="audience-nav">
+      <div class="audience-nav-item active" data-target="investors" onclick="switchAudience(this)">For Investors</div>
+      <div class="audience-nav-item" data-target="hospitals" onclick="switchAudience(this)">For Hospitals</div>
+      <div class="audience-nav-item" data-target="vendors" onclick="switchAudience(this)">For Vendors</div>
+    </nav>
+    <div class="audience-panels">
+      <!-- Investors Panel -->
+      <div class="audience-content-panel active" id="panel-investors">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Investment analytics dashboard" style="width:100%; height:200px; object-fit:cover; border-radius:var(--radius); margin-bottom:24px;">
+        <h3>A Platform Investment, Not a Product Bet</h3>
+        <p>Person Health is building the operating system for early disease detection. Our multi-modal approach creates compounding value: every patient, every data point, every clinical partnership strengthens the platform's intelligence and defensibility.</p>
+        <div style="margin:28px 0 16px;">
+          <p style="font-weight:700; font-family:'Sora',sans-serif; color:var(--dark); margin-bottom:16px;">Elite Clinical Validation</p>
+          <div style="display:flex; align-items:center; gap:32px; flex-wrap:wrap; margin-bottom:28px;">
+            <img src="https://college.mayo.edu/media/mccms/site-assets/faviconsx2flogo/MCCMS_Logo_Black_New.svg" alt="Mayo Clinic" style="height:36px; object-fit:contain;">
+            <img src="https://my.clevelandclinic.org/-/scassets/images/org/logo/logo-ccf.svg" alt="Cleveland Clinic" style="height:36px; object-fit:contain;">
+            <img src="https://www.mdanderson.org/etc.clientlibs/mda/clientlibs/mda-web/clientlib-site/resources/images/xmda-logo.png.pagespeed.ic.N11qaULSMU.png" alt="MD Anderson" style="height:36px; object-fit:contain;">
+            <img src="https://www.baylor.edu/themes/custom/baylor_united_2/logo.svg" alt="Baylor" style="height:36px; object-fit:contain;">
+          </div>
+          <p style="font-weight:700; font-family:'Sora',sans-serif; color:var(--dark); margin-bottom:16px;">Industry & Academic Lineage</p>
+          <div style="display:flex; align-items:center; gap:32px; flex-wrap:wrap;">
+            <img src="https://www.bostonscientific.com/content/dam/bostonscientific/global/logo/bsc-logo.svg" alt="Boston Scientific" style="height:32px; object-fit:contain;">
+            <img src="https://brand.umn.edu/sites/brand.umn.edu/files/2019-09/m-wordmark_0.png" alt="University of Minnesota" style="height:36px; object-fit:contain;">
+          </div>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin-top:12px;">Deep academic and industry roots that competitors cannot replicate.</p>
+        </div>
+        <ul>
+          <li>Scalable platform designed for large patient populations</li>
+          <li>43+ patents filed — defensible, compounding IP moat</li>
+          <li>Multi-modal platform creates winner-take-most dynamics</li>
+          <li>Category-defining opportunity in a market where early detection saves lives and billions in downstream costs</li>
+        </ul>
+        <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" style="background:linear-gradient(135deg, var(--primary), #9b6ed8); font-size:15px; padding:16px 36px;">Request Investor Deck & Schedule Briefing</button>
+      </div>
+      <!-- Hospitals Panel -->
+      <div class="audience-content-panel" id="panel-hospitals">
+        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80" alt="Modern hospital facility" style="width:100%; height:200px; object-fit:cover; border-radius:var(--radius); margin-bottom:24px;">
+        <h3>Be First to Offer Next-Generation Screening</h3>
+        <p>Leading health systems including Mayo Clinic and Baylor are already engaged. Person Health integrates into existing clinical workflows with minimal disruption and maximum patient impact.</p>
+        <p>Our platform enables your health system to offer non-invasive, rapid screening at the point of care, improving detection rates while reducing the burden on patients and staff.</p>
+        <ul>
+          <li>Results in under one minute for breath diagnostics</li>
+          <li>Non-invasive collection improves patient compliance</li>
+          <li>AI-powered risk stratification reduces unnecessary procedures</li>
+          <li>HIPAA-compliant integration with existing EHR systems</li>
+          <li>Dedicated clinical support and training</li>
+        </ul>
+        <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Request Clinical Partnership</button>
+      </div>
+      <!-- Vendors Panel -->
+      <div class="audience-content-panel" id="panel-vendors">
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80" alt="Technology partnership" style="width:100%; height:200px; object-fit:cover; border-radius:var(--radius); margin-bottom:24px;">
+        <h3>Power the Future of Diagnostics</h3>
+        <p>Person Health is building an ecosystem. We are seeking technology partners, lab equipment suppliers, and service providers who want to be part of the next generation of healthcare infrastructure.</p>
+        <p><strong>Who we are looking for:</strong></p>
+        <ul>
+          <li>Lab equipment and reagent suppliers</li>
+          <li>AI/ML technology partners</li>
+          <li>Clinical trial management organizations</li>
+          <li>Healthcare IT and EHR integration specialists</li>
+          <li>Regulatory and compliance consultants</li>
+        </ul>
+        <p><strong>Benefits:</strong> Early ecosystem access, co-development opportunities, preferred vendor status as we scale nationally.</p>
+        <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Explore Vendor Partnership</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <div class="about-hero">
+    <img class="about-hero-img" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80" alt="Earth from space representing global health data">
+    <div class="about-hero-overlay"></div>
+    <div class="about-hero-quote fade-in">
+      <blockquote>"For too long, healthcare has been organized around institutions rather than individuals. We are changing that."</blockquote>
+    </div>
+  </div>
+  <div class="about-grid">
+    <div class="about-block fade-in">
+      <h3>Our Mission</h3>
+      <p>We are not building a diagnostic product. We are building infrastructure for early understanding and lifelong health stewardship. Person Health exists to make disease detection so simple, accessible, and accurate that no treatable condition goes undetected.</p>
+      <p style="margin-top: 12px; font-style: italic; color: var(--primary); font-weight: 500;">We believe every person deserves to know their health story — early, clearly, and completely.</p>
+    </div>
+    <div class="about-block fade-in">
+      <h3>Our Origins</h3>
+      <p>Person Health was born from a University of Minnesota spinout, merged with Oncodea's molecular diagnostics expertise and MTL/CareNexa's clinical infrastructure. The result: a vertically integrated platform with deep scientific roots and operational scale.</p>
+    </div>
+    <div class="about-block fade-in">
+      <h3>Our Team</h3>
+      <p>Leaders from medtech, AI, and healthcare with 80+ patents and multiple PhDs. Our team combines scientific rigor with operational excellence, spanning diagnostics development, clinical operations, regulatory strategy, and enterprise technology.</p>
+    </div>
+    <div class="about-block fade-in">
+      <h3>Clinical Partners</h3>
+      <p>Validated by the institutions that define clinical excellence. Our research and validation partnerships span the nation's leading medical centers.</p>
+      <div class="about-partners">
+        <span class="about-partner-tag">Mayo Clinic</span>
+        <span class="about-partner-tag">Cleveland Clinic</span>
+        <span class="about-partner-tag">MD Anderson</span>
+        <span class="about-partner-tag">Baylor</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEADERSHIP & SCIENTIFIC ADVISORY ===== -->
+<section class="leadership" id="leadership">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Our People</span>
+      <h2 class="section-title">Leadership & Scientific Advisory</h2>
+      <p class="section-subtitle">World-class leaders in diagnostics, AI, and clinical science</p>
+    </div>
+  </div>
+  <div class="leadership-grid">
+    <div class="leader-card fade-in">
+      <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&q=80" alt="Chief Executive Officer">
+      <div class="leader-card-body">
+        <h4>Chief Executive Officer</h4>
+        <p>Former medtech executive with 20+ years building diagnostic platforms. Boston Scientific lineage.</p>
+      </div>
+    </div>
+    <div class="leader-card fade-in">
+      <img src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=400&q=80" alt="Chief Operating Officer">
+      <div class="leader-card-body">
+        <h4>Chief Operating Officer</h4>
+        <p>Healthcare operations leader. Driving commercial strategy across health systems nationwide.</p>
+      </div>
+    </div>
+    <div class="leader-card fade-in">
+      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80" alt="Chief Scientific Officer">
+      <div class="leader-card-body">
+        <h4>Chief Scientific Officer</h4>
+        <p>PhD in Cancer Biology. 80+ patents. Pioneer in breath-based diagnostics.</p>
+      </div>
+    </div>
+    <div class="leader-card fade-in">
+      <img src="https://images.unsplash.com/photo-1598550874175-4d0ef436c909?w=400&q=80" alt="Chief Technology Officer">
+      <div class="leader-card-body">
+        <h4>Chief Technology Officer</h4>
+        <p>AI and machine learning architect. Building the intelligence layer connecting diagnostic modalities.</p>
+      </div>
+    </div>
+  </div>
+  <h3 class="advisory-label fade-in">Scientific & Clinical Advisory Board</h3>
+  <div class="advisory-grid">
+    <div class="advisory-card fade-in">
+      <h4>Mayo Clinic</h4>
+      <p>Gold Standard Clinical Rigor</p>
+    </div>
+    <div class="advisory-card fade-in">
+      <h4>Cleveland Clinic</h4>
+      <p>Cardiology & Oncology Strength</p>
+    </div>
+    <div class="advisory-card fade-in">
+      <h4>MD Anderson Cancer Center</h4>
+      <p>Oncology Validation</p>
+    </div>
+    <div class="advisory-card fade-in">
+      <h4>Baylor University</h4>
+      <p>Oncology Research</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <h2 class="fade-in">Start a Conversation</h2>
+    <p class="fade-in">Tell us who you are and how we can work together.</p>
+    <div class="contact-pills fade-in">
+      <button class="contact-pill active" onclick="selectPill(this)">Investor</button>
+      <button class="contact-pill" onclick="selectPill(this)">Health System</button>
+      <button class="contact-pill" onclick="selectPill(this)">Vendor</button>
+    </div>
+    <form class="contact-form fade-in" onsubmit="event.preventDefault(); alert('Thank you. We will be in touch shortly.');">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="c-name">Name</label>
+          <input type="text" id="c-name" name="name" placeholder="Full name" required>
+        </div>
+        <div class="form-group">
+          <label for="c-email">Email</label>
+          <input type="email" id="c-email" name="email" placeholder="work@company.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="c-phone">Phone</label>
+          <input type="tel" id="c-phone" name="phone" placeholder="+1 (555) 000-0000">
+        </div>
+        <div class="form-group">
+          <label for="c-org">Organization</label>
+          <input type="text" id="c-org" name="org" placeholder="Company name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="c-role">Role</label>
+        <select id="c-role" name="role">
+          <option value="">Select your role</option>
+          <option>C-Suite / Executive</option>
+          <option>VP / Director</option>
+          <option>Clinical / Medical</option>
+          <option>Investment / Finance</option>
+          <option>Operations / Procurement</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="c-message">Message</label>
+        <textarea id="c-message" name="message" placeholder="How can we work together?"></textarea>
+      </div>
+      <button type="submit" class="btn-submit">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo-wrap">
+        <img src="../logos/logo-c-purple-white-nav.png" alt="Person Health" style="height:36px;">
+      </div>
+      <p>Building infrastructure for early disease detection and lifelong health stewardship.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="#platform">VocxiHealth</a>
+      <a href="#platform">Oncodea</a>
+      <a href="#platform">RealBusiness.AI</a>
+    </div>
+    <div class="footer-col">
+      <h4>Science</h4>
+      <a href="#pipeline">Modalities</a>
+      <a href="#failures">Research</a>
+      <a href="#advantages">Advantages</a>
+    </div>
+    <div class="footer-col">
+      <h4>Partners</h4>
+      <a href="#audience">Investors</a>
+      <a href="#audience">Hospitals</a>
+      <a href="#audience">Vendors</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#">Careers</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Person Health. All rights reserved.</span>
+    <div>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ===== NAVBAR SCROLL BEHAVIOR =====
+const navbar = document.getElementById('navbar');
+let lastScroll = 0;
+
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 80);
+}, { passive: true });
+
+// ===== MOBILE NAV TOGGLE =====
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+
+navToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+  });
+});
+
+// ===== PLATFORM ACCORDION =====
+function toggleAccordion(header) {
+  const item = header.closest('.accordion-item');
+  const wasActive = item.classList.contains('active');
+
+  // Close all accordion items
+  document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.diagram-content').forEach(d => d.classList.remove('active'));
+
+  if (!wasActive) {
+    item.classList.add('active');
+    const panel = item.getAttribute('data-panel');
+    const diagramMap = {
+      vocxi: 'diagram-vocxi',
+      oncodea: 'diagram-oncodea',
+      realbiz: 'diagram-realbiz'
+    };
+    const diagramEl = document.getElementById(diagramMap[panel]);
+    if (diagramEl) diagramEl.classList.add('active');
+  } else {
+    // Always keep one open - default to first
+    const first = document.querySelector('.accordion-item');
+    first.classList.add('active');
+    document.getElementById('diagram-vocxi').classList.add('active');
+  }
+}
+
+// ===== AUDIENCE SIDE-NAV SWITCHING =====
+function switchAudience(el) {
+  document.querySelectorAll('.audience-nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.audience-content-panel').forEach(p => p.classList.remove('active'));
+
+  el.classList.add('active');
+  const target = el.getAttribute('data-target');
+  document.getElementById('panel-' + target).classList.add('active');
+}
+
+// ===== CONTACT PILL SELECTION =====
+function selectPill(el) {
+  document.querySelectorAll('.contact-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== INTERSECTION OBSERVER FOR FADE-IN ANIMATIONS =====
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, {
+  threshold: 0.1,
+  rootMargin: '0px 0px -40px 0px'
+});
+
+document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+// ===== METRICS BAR/CIRCULAR ANIMATION =====
+const metricsGrid = document.getElementById('metricsGrid');
+
+const metricObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Animate bar fills
+      entry.target.querySelectorAll('.metric-bar-fill').forEach(bar => {
+        bar.classList.add('animated');
+      });
+      // Animate circular progress (86% of circumference)
+      entry.target.querySelectorAll('.metric-circular-fill').forEach(circle => {
+        const circumference = 138.23;
+        const offset = circumference * (1 - 0.86);
+        circle.style.strokeDashoffset = offset;
+      });
+      metricObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+if (metricsGrid) metricObserver.observe(metricsGrid);
+
+// ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href === '#') return;
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      const offset = navbar.offsetHeight + 16;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>

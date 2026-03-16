@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Person Health — Detect Disease Before Symptoms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== CSS CUSTOM PROPERTIES ========== */
+:root {
+  --primary: #195BFE;
+  --light: #E5ECFE;
+  --dark: #0a1628;
+  --white: #ffffff;
+  --gray-100: #f4f6fa;
+  --gray-200: #e2e6ee;
+  --gray-600: #6b7a99;
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --max-width: 1200px;
+}
+
+/* ========== RESET ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: #1a2740;
+  line-height: 1.7;
+  background: var(--white);
+  overflow-x: hidden;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { border: none; cursor: pointer; font-family: var(--font-body); }
+input, textarea, select { font-family: var(--font-body); }
+
+/* ========== UTILITY ========== */
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+/* ========== ANIMATIONS ========== */
+@keyframes orbFloat {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; }
+  33% { transform: translate(-40%, -60%) scale(1.15); opacity: 0.25; }
+  66% { transform: translate(-60%, -40%) scale(0.9); opacity: 0.4; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; }
+}
+@keyframes orbFloat2 {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+  50% { transform: translate(-30%, -70%) scale(1.2); opacity: 0.15; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(25, 91, 254, 0.4), 0 0 60px rgba(25, 91, 254, 0.15); }
+  50% { box-shadow: 0 0 30px rgba(25, 91, 254, 0.6), 0 0 80px rgba(25, 91, 254, 0.25); }
+}
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes dashMove {
+  to { stroke-dashoffset: -20; }
+}
+
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s var(--transition), transform 0.8s var(--transition); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 0.8s var(--transition), transform 0.8s var(--transition); }
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(60px); transition: opacity 0.8s var(--transition), transform 0.8s var(--transition); }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* ========== NAVBAR ========== */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 16px 0;
+  transition: background var(--transition), box-shadow var(--transition), padding var(--transition);
+}
+.navbar.scrolled {
+  background: rgba(255,255,255,0.97);
+  box-shadow: 0 1px 20px rgba(0,0,0,0.08);
+  padding: 10px 0;
+}
+.navbar .container {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-brand .logo-white { display: block; height: 40px; }
+.nav-brand .logo-color { display: none; height: 40px; }
+.navbar.scrolled .nav-brand .logo-white { display: none; }
+.navbar.scrolled .nav-brand .logo-color { display: block; }
+
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a {
+  font-weight: 600; font-size: 1rem; letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.8); transition: color var(--transition);
+}
+.navbar.scrolled .nav-links a { color: var(--gray-600); }
+.nav-links a:hover { color: var(--primary); }
+
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px; background: none; padding: 4px;
+}
+.nav-hamburger span {
+  width: 24px; height: 2px; background: var(--white); border-radius: 2px;
+  transition: background var(--transition);
+}
+.navbar.scrolled .nav-hamburger span { background: var(--dark); }
+
+/* ========== HERO ========== */
+.hero {
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.7) 50%, rgba(25,91,254,0.25) 100%), url('https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1920&q=80') center/cover no-repeat;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; text-align: center;
+  padding: 120px 24px 80px;
+}
+.hero-orb {
+  position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(25,91,254,0.5) 0%, rgba(25,91,254,0) 70%);
+  top: 50%; left: 50%;
+  animation: orbFloat 12s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero-orb-2 {
+  position: absolute; width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(100,150,255,0.3) 0%, rgba(100,150,255,0) 70%);
+  top: 30%; left: 60%;
+  animation: orbFloat2 9s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 2; max-width: 900px; }
+.hero h1 {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  line-height: 1.05; color: var(--white);
+  margin-bottom: 28px; letter-spacing: -0.03em;
+}
+.hero h1 span { display: block; }
+.hero-sub {
+  font-size: clamp(1.25rem, 2vw, 1.4rem);
+  color: var(--light); max-width: 640px; margin: 0 auto 48px;
+  line-height: 1.6; font-weight: 400;
+}
+.hero-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-glow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 18px 40px; border-radius: 60px;
+  font-weight: 700; font-size: 1.1rem;
+  background: var(--primary); color: var(--white);
+  animation: pulseGlow 3s ease-in-out infinite;
+  transition: transform var(--transition);
+}
+.btn-glow:hover { transform: translateY(-2px); }
+.btn-outline-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 18px 40px; border-radius: 60px;
+  font-weight: 700; font-size: 1.1rem;
+  background: transparent; color: var(--white);
+  border: 2px solid rgba(255,255,255,0.3);
+  transition: all var(--transition);
+}
+.btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,0.06); }
+
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.4); font-size: 0.9rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.hero-scroll svg { animation: bounceDown 2s ease-in-out infinite; }
+
+/* ========== FEATURE SCROLL SECTIONS ========== */
+.feature-section {
+  min-height: 60vh; display: flex; align-items: center;
+  padding: 80px 0; overflow: hidden;
+}
+.feature-section:nth-child(even) { background: var(--gray-100); }
+.feature-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  max-width: var(--max-width); margin: 0 auto; padding: 0 24px;
+}
+.feature-grid.reverse .feature-text { order: 2; }
+.feature-grid.reverse .feature-img { order: 1; }
+.feature-text h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.4rem, 5vw, 3.5rem); line-height: 1.1;
+  color: var(--dark); margin-bottom: 20px; letter-spacing: -0.02em;
+}
+.feature-text p {
+  font-size: 1.2rem; color: var(--gray-600); line-height: 1.7; max-width: 520px;
+}
+.feature-img img {
+  border-radius: 12px; width: 100%;
+  object-fit: cover; aspect-ratio: 4/3;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.14);
+}
+.feature-label {
+  display: inline-block; font-size: 0.88rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--primary); margin-bottom: 12px;
+  padding: 6px 14px; background: var(--light); border-radius: 40px;
+}
+
+/* ========== PLATFORM — DARK DASHBOARD ========== */
+.platform {
+  background: var(--dark); color: var(--white);
+  padding: 120px 0;
+}
+.platform .section-head {
+  text-align: center; max-width: 720px; margin: 0 auto 64px;
+}
+.platform .section-head h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.platform .section-head p {
+  color: rgba(255,255,255,0.6); font-size: 1.1rem; line-height: 1.7;
+}
+.platform-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+}
+.glass-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius); padding: 44px 36px;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.glass-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(25,91,254,0.4);
+}
+.glass-card-logo {
+  height: 52px; margin-bottom: 24px;
+  display: flex; align-items: center;
+  overflow: hidden;
+}
+.glass-card-logo img { height: 52px; width: auto; max-width: 100%; filter: brightness(1.3) contrast(1.1); }
+.glass-card-logo svg { height: 40px; width: auto; max-width: 100%; flex-shrink: 0; }
+.glass-card h3 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: 1.3rem; margin-bottom: 12px;
+}
+.glass-card p {
+  color: rgba(255,255,255,0.6); font-size: 1rem; line-height: 1.7;
+  margin-bottom: 20px;
+}
+.glass-card-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.glass-tag {
+  font-size: 0.85rem; font-weight: 600;
+  padding: 6px 14px; border-radius: 40px;
+  background: rgba(25,91,254,0.2); color: var(--primary);
+  letter-spacing: 0.02em;
+}
+
+/* ========== MODALITIES — CONNECTED FLOW ========== */
+.modalities { padding: 100px 0; background: var(--white); }
+.modalities .section-head { text-align: center; margin-bottom: 64px; }
+.modalities .section-head h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); color: var(--dark); margin-bottom: 12px;
+}
+.modalities .section-head p { color: var(--gray-600); font-size: 1.1rem; }
+.modality-flow {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; flex-wrap: wrap; position: relative;
+}
+.modality-node {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  position: relative; z-index: 2;
+}
+.modality-icon {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: var(--light); display: flex; align-items: center; justify-content: center;
+  border: 3px solid var(--primary);
+  transition: transform var(--transition);
+}
+.modality-icon:hover { transform: scale(1.1); }
+.modality-icon svg { width: 48px; height: 48px; color: var(--primary); }
+.modality-label {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: 1.15rem; color: var(--dark);
+}
+.modality-desc {
+  font-size: 0.95rem; color: var(--gray-600); text-align: center;
+  max-width: 160px; line-height: 1.5; margin-top: 4px;
+}
+.modality-connector { width: 80px; height: 2px; position: relative; margin: 0 -4px; z-index: 1; }
+.modality-connector svg { width: 100%; height: 20px; overflow: visible; }
+.modality-connector line {
+  stroke: var(--primary); stroke-width: 2;
+  stroke-dasharray: 8 6;
+  animation: dashMove 1s linear infinite;
+}
+
+/* ========== FIVE DIAGNOSTIC FAILURES ========== */
+.failures { background: var(--light); padding: 100px 0; }
+.failures .section-head { text-align: center; max-width: 700px; margin: 0 auto 56px; }
+.failures .section-head h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); color: var(--dark); margin-bottom: 12px;
+}
+.failures-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px;
+  margin-bottom: 48px;
+}
+.failure-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 32px 28px; text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  transition: transform var(--transition);
+}
+.failure-card:hover { transform: translateY(-4px); }
+.failure-num {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: clamp(3rem, 6vw, 4.5rem); color: var(--primary); line-height: 1; margin-bottom: 12px;
+}
+.failure-card h4 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: 1rem; color: var(--dark); margin-bottom: 8px;
+}
+.failure-card p { font-size: 1rem; color: var(--gray-600); line-height: 1.6; }
+.failures-callout {
+  background: var(--primary); color: var(--white);
+  border-radius: var(--radius); padding: 32px 40px;
+  text-align: center; font-family: var(--font-heading); font-weight: 700;
+  font-size: 1.2rem; letter-spacing: -0.01em;
+}
+
+/* ========== ANIMATED STATS ========== */
+.stats-bar {
+  background: var(--primary); padding: 100px 0;
+  position: relative; overflow: hidden;
+}
+.stats-bar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.03) 0px,
+    rgba(255,255,255,0.03) 1px,
+    transparent 1px,
+    transparent 12px
+  );
+  pointer-events: none;
+}
+.stats-bar::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+  text-align: center;
+}
+.stat-item h3 {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: clamp(3rem, 6vw, 4.5rem); color: var(--white);
+  line-height: 1; margin-bottom: 8px;
+}
+.stat-item p { color: rgba(255,255,255,0.7); font-size: 1.05rem; font-weight: 500; }
+
+/* ========== COMPETITIVE ADVANTAGE ========== */
+.competitive { padding: 100px 0; background: var(--white); }
+.competitive .section-head { text-align: center; max-width: 800px; margin: 0 auto 56px; }
+.competitive .section-head h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); color: var(--dark); margin-bottom: 16px;
+}
+.competitive .section-head p { color: var(--gray-600); font-size: 1.1rem; line-height: 1.7; }
+.competitive-visual {
+  margin-bottom: 48px; border-radius: var(--radius); overflow: hidden;
+  position: relative; max-height: 320px;
+}
+.competitive-visual img {
+  width: 100%; height: 320px; object-fit: cover;
+  filter: brightness(0.4);
+}
+.competitive-visual-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(25,91,254,0.6) 0%, rgba(10,22,40,0.7) 100%);
+}
+.competitive-visual-overlay span {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: clamp(1.4rem, 3vw, 2.2rem); color: var(--white);
+  text-align: center; max-width: 600px; line-height: 1.3;
+}
+.competitive-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.comp-block {
+  background: var(--gray-100); border-radius: var(--radius);
+  padding: 40px 36px; border-left: 4px solid var(--primary);
+}
+.comp-block h3 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: 1.5rem; color: var(--dark); margin-bottom: 12px;
+}
+.comp-block p { color: var(--gray-600); font-size: 1.1rem; line-height: 1.7; }
+
+/* ========== AUDIENCE TABS ========== */
+.audience { background: var(--gray-100); padding: 100px 0; }
+.audience .section-head { text-align: center; margin-bottom: 48px; }
+.audience .section-head h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); color: var(--dark);
+}
+.tab-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 48px; }
+.tab-btn {
+  padding: 14px 32px; border-radius: 60px;
+  font-weight: 700; font-size: 1rem;
+  background: var(--white); color: var(--gray-600);
+  border: 2px solid var(--gray-200);
+  transition: all var(--transition);
+}
+.tab-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+.tab-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeInUp 0.5s ease; }
+.tab-content {
+  background: var(--white); border-radius: var(--radius);
+  padding: 56px 48px; box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+  max-width: 800px; margin: 0 auto;
+}
+.tab-content h3 {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: 1.6rem; color: var(--dark); margin-bottom: 16px;
+}
+.tab-content p { color: var(--gray-600); font-size: 1rem; line-height: 1.7; margin-bottom: 16px; }
+.tab-content ul { margin-bottom: 24px; }
+.tab-content li {
+  position: relative; padding-left: 24px; margin-bottom: 10px;
+  color: var(--gray-600); font-size: 1rem;
+}
+.tab-content li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 8px; height: 8px; border-radius: 50%; background: var(--primary);
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 16px 36px; border-radius: 60px;
+  font-weight: 700; font-size: 1rem;
+  background: var(--primary); color: var(--white);
+  transition: all var(--transition);
+}
+.btn-primary:hover { background: #0d47e0; transform: translateY(-2px); }
+
+/* ========== ABOUT ========== */
+.about { padding: 120px 0; background: var(--white); }
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.about-img img {
+  border-radius: var(--radius); width: 100%; object-fit: cover;
+  aspect-ratio: 4/3; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+.about-text h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); color: var(--dark); margin-bottom: 20px;
+}
+.about-text p { color: var(--gray-600); font-size: 1.05rem; line-height: 1.7; margin-bottom: 16px; }
+.about-text strong { color: var(--dark); }
+
+/* ========== COMMUNITY ========== */
+.community { padding: 100px 0; background: var(--gray-100); }
+.community-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.community-img img {
+  border-radius: var(--radius); width: 100%; object-fit: cover;
+  aspect-ratio: 4/3; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+.community-text h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); color: var(--dark); margin-bottom: 20px;
+}
+.community-text p { color: var(--gray-600); font-size: 1.05rem; line-height: 1.7; margin-bottom: 16px; }
+
+/* ========== CONTACT ========== */
+.contact {
+  padding: 120px 0;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+}
+.contact-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 56px 48px; max-width: 640px; margin: 0 auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.contact-card h2 {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: 2rem; color: var(--dark); margin-bottom: 8px; text-align: center;
+}
+.contact-card > p { text-align: center; color: var(--gray-600); margin-bottom: 32px; }
+.audience-btns {
+  display: flex; gap: 8px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap;
+}
+.audience-btn {
+  padding: 10px 20px; border-radius: 60px;
+  font-weight: 600; font-size: 0.95rem;
+  background: var(--light); color: var(--primary);
+  border: 2px solid transparent;
+  transition: all var(--transition);
+}
+.audience-btn.active, .audience-btn:hover { background: var(--primary); color: var(--white); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-weight: 600; font-size: 0.95rem;
+  color: var(--dark); margin-bottom: 6px;
+}
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 14px 16px; border-radius: var(--radius-sm);
+  border: 2px solid var(--gray-200); font-size: 1rem;
+  transition: border-color var(--transition); background: var(--white);
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  outline: none; border-color: var(--primary);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-submit {
+  width: 100%; padding: 16px; border-radius: 60px;
+  font-weight: 700; font-size: 1rem;
+  background: var(--primary); color: var(--white);
+  transition: all var(--transition);
+}
+.form-submit:hover { background: #0d47e0; }
+
+/* ========== FOOTER ========== */
+.footer {
+  background: var(--dark); color: rgba(255,255,255,0.5); padding: 80px 0 40px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px;
+  margin-bottom: 48px;
+}
+.footer-brand-text {
+  margin-bottom: 12px;
+}
+.footer-brand-text img { height: 40px; width: auto; }
+.footer-col p { font-size: 1rem; line-height: 1.7; }
+.footer-col h4 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: 0.95rem; color: var(--white); margin-bottom: 16px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.footer-col a {
+  display: block; font-size: 1rem; margin-bottom: 10px;
+  transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--primary); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+}
+.footer-bottom a { margin-left: 20px; }
+.footer-bottom a:hover { color: var(--primary); }
+
+/* ========== TAB CONTENT WITH IMAGE ========== */
+.tab-content-with-image {
+  display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center;
+  max-width: 1000px;
+}
+.tab-content-with-image .tab-content-text { }
+.tab-content-with-image .tab-content-image { }
+
+/* ========== TEAM SECTION ========== */
+.team-section {
+  padding: 100px 0; background: var(--gray-100);
+}
+.team-carousel {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+}
+.team-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 0; overflow: hidden; text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.team-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+.team-headshot {
+  width: 100%; height: 260px; object-fit: cover; object-position: center top;
+}
+.team-name {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: 1.05rem; color: var(--dark); margin: 20px 20px 8px;
+}
+.team-bio {
+  font-family: var(--font-body); font-size: 1rem;
+  color: var(--gray-600); line-height: 1.6; padding: 0 20px 24px;
+}
+
+/* ========== ADVISORY BOARD ========== */
+.advisory-board {
+  background: #0a1628; padding: 100px 0;
+}
+.advisory-badges {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px;
+}
+.advisory-badge {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius); padding: 40px 28px;
+  text-align: center;
+  transition: border-color var(--transition), transform var(--transition);
+}
+.advisory-badge:hover {
+  border-color: rgba(25,91,254,0.5);
+  transform: translateY(-4px);
+}
+.advisory-badge-name {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: 1.3rem; color: var(--white); margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.advisory-badge-sub {
+  font-size: 0.95rem; font-weight: 600; color: var(--primary);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .platform-cards { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+  .failures-grid { grid-template-columns: repeat(3, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+  .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .team-carousel { grid-template-columns: repeat(2, 1fr); }
+  .advisory-badges { grid-template-columns: repeat(2, 1fr); }
+  .tab-content-with-image { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 60px; left: 0; right: 0;
+    background: var(--white); padding: 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+  }
+  .nav-links.open a { color: var(--dark); padding: 8px 0; }
+  .feature-grid, .feature-grid.reverse { grid-template-columns: 1fr; gap: 40px; }
+  .feature-grid.reverse .feature-text { order: 1; }
+  .feature-grid.reverse .feature-img { order: 2; }
+  .failures-grid { grid-template-columns: 1fr 1fr; }
+  .competitive-blocks { grid-template-columns: 1fr; }
+  .about-grid, .community-inner { grid-template-columns: 1fr; gap: 40px; }
+  .team-carousel { grid-template-columns: 1fr 1fr; }
+  .advisory-badges { grid-template-columns: 1fr 1fr; }
+  .tab-nav { flex-direction: column; align-items: center; }
+  .tab-content { padding: 32px 24px; }
+  .contact-card { padding: 32px 24px; }
+  .form-row { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .modality-flow { flex-direction: column; gap: 8px; }
+  .modality-connector { width: 2px; height: 40px; }
+  .modality-connector svg { width: 20px; height: 40px; }
+  .hero-ctas { flex-direction: column; align-items: center; }
+}
+@media (max-width: 480px) {
+  .failures-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .team-carousel { grid-template-columns: 1fr; }
+  .advisory-badges { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="#" class="nav-brand">
+      <img class="logo-white" src="../logos/logo-b-blue-white-nav.png" alt="Person Health" style="height:40px;">
+      <img class="logo-color" src="../logos/logo-b-blue-nav.png" alt="Person Health" style="height:40px;">
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#platform">Platform</a>
+      <a href="#features">Science</a>
+      <a href="#audience">Partners</a>
+      <a href="#about">About</a>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-orb-2"></div>
+  <div class="hero-content">
+    <h1>
+      <span>Detect Disease</span>
+      <span>Before Symptoms.</span>
+    </h1>
+    <p class="hero-sub">Every day, diseases go undetected because our tools aren't good enough. We're changing that — with the first platform that sees what others miss.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-glow">Request Partnership Discussion</a>
+      <a href="#platform" class="btn-outline-white">Explore the Platform</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
+      <path d="M8 4v12M3 12l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ========== FEATURE SCROLL SECTIONS ========== -->
+<div id="features">
+
+<!-- Feature 1 — Image RIGHT -->
+<section class="feature-section">
+  <div class="feature-grid">
+    <div class="feature-text reveal-left">
+      <span class="feature-label">Diagnostics</span>
+      <h2>Multi-Modal Diagnostics</h2>
+      <p>Breath, blood, genomics, and AI — integrated into one platform for comprehensive early detection.</p>
+    </div>
+    <div class="feature-img reveal-right">
+      <img src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&q=80" alt="Scientists in lab coats with microscope" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- Feature 2 — Image LEFT -->
+<section class="feature-section">
+  <div class="feature-grid reverse">
+    <div class="feature-text reveal-right">
+      <span class="feature-label">Validation</span>
+      <h2>Clinically Validated</h2>
+      <p>Validated with leading academic medical centers including Mayo Clinic, Cleveland Clinic, MD Anderson, and Baylor.</p>
+    </div>
+    <div class="feature-img reveal-left">
+      <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80" alt="Medical technology" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- Feature 3 — Image RIGHT -->
+<section class="feature-section">
+  <div class="feature-grid">
+    <div class="feature-text reveal-left">
+      <span class="feature-label">Intellectual Property</span>
+      <h2>43+ Patents</h2>
+      <p>Dozens of patents across sensors, chemistry, and AI methods protecting our proprietary platform.</p>
+    </div>
+    <div class="feature-img reveal-right">
+      <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80" alt="Scientific research and innovation" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- Feature 4 — Image LEFT -->
+<section class="feature-section">
+  <div class="feature-grid reverse">
+    <div class="feature-text reveal-right">
+      <span class="feature-label">Infrastructure</span>
+      <h2>Lab-Grade Infrastructure</h2>
+      <p>Built on CLIA-certified, CAP-accredited lab infrastructure. Boston Scientific lineage.</p>
+    </div>
+    <div class="feature-img reveal-left">
+      <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=80" alt="Laboratory" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- Feature 5 — Image RIGHT -->
+<section class="feature-section">
+  <div class="feature-grid">
+    <div class="feature-text reveal-left">
+      <span class="feature-label">Speed</span>
+      <h2>Early Detection Engine</h2>
+      <p>Designed to detect disease signals before symptoms appear. Results in minutes, not weeks.</p>
+    </div>
+    <div class="feature-img reveal-right">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80" alt="Medical device" loading="lazy">
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ========== PLATFORM — DARK DASHBOARD ========== -->
+<section class="platform" id="platform">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Three Companies, One Health OS</h2>
+      <p>We combine breath diagnostics, blood molecular fingerprinting, advanced laboratory infrastructure, and agentic AI to bring earlier insight to patients and clinicians.</p>
+    </div>
+    <div class="platform-cards">
+      <!-- VocxiHealth -->
+      <div class="glass-card reveal">
+        <div class="glass-card-logo">
+          <img src="https://vocxihealth.com/wp-content/uploads/VOC2127_Vocxi_Logo_2Color_Lig.png" alt="VocxiHealth">
+        </div>
+        <h3>VocxiHealth</h3>
+        <p>Clinically validated breath diagnostics with results in under one minute. 43+ patents protecting proprietary VOC detection technology.</p>
+        <div class="glass-card-tags">
+          <span class="glass-tag">Breath</span>
+          <span class="glass-tag">VOC Detection</span>
+          <span class="glass-tag">MyBreathPrint&reg;</span>
+        </div>
+      </div>
+      <!-- Oncodea -->
+      <div class="glass-card reveal">
+        <div class="glass-card-logo">
+          <img src="https://oncodea.com/wp-content/uploads/2024/12/Screen-Shot-2020-05-14-at-11.51.34-AM.png" alt="Oncodea">
+        </div>
+        <h3>Oncodea</h3>
+        <p>Blood molecular fingerprinting. ML-powered cancer detection. VERITY Study active across multiple clinical sites.</p>
+        <div class="glass-card-tags">
+          <span class="glass-tag">Blood</span>
+          <span class="glass-tag">Molecular</span>
+          <span class="glass-tag">OncodeAi&trade;</span>
+        </div>
+      </div>
+      <!-- RealBusiness.AI -->
+      <div class="glass-card reveal">
+        <div class="glass-card-logo">
+          <svg width="160" height="40" viewBox="0 0 220 55" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#195BFE">Real</text>
+            <text x="58" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#195BFE">Business</text>
+            <rect x="164" y="14" rx="6" ry="6" width="50" height="30" fill="#195BFE"/>
+            <text x="172" y="35" font-family="Inter,sans-serif" font-size="19" font-weight="700" fill="white">.AI</text>
+          </svg>
+        </div>
+        <h3>RealBusiness.AI</h3>
+        <p>Agentic AI platform. Scalable operating platform for large populations. HIPAA/GDPR compliant with enterprise-grade security.</p>
+        <div class="glass-card-tags">
+          <span class="glass-tag">AI</span>
+          <span class="glass-tag">Workflow</span>
+          <span class="glass-tag">Decision Support</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MODALITIES — CONNECTED FLOW ========== -->
+<section class="modalities">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Connected Diagnostic Pipeline</h2>
+      <p>Four modalities, one integrated flow from sample to insight.</p>
+    </div>
+    <div class="modality-flow reveal">
+      <!-- Breath -->
+      <div class="modality-node">
+        <div class="modality-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8c0-3.3-2.7-6-6-6S6 4.7 6 8c0 4 6 10 6 10s6-6 6-10z"/>
+            <circle cx="12" cy="8" r="2"/>
+          </svg>
+        </div>
+        <span class="modality-label">Breath</span>
+        <span class="modality-desc">VocxiHealth MyBreathPrint&reg; — non-invasive VOC detection</span>
+      </div>
+      <!-- Connector -->
+      <div class="modality-connector">
+        <svg viewBox="0 0 80 20"><line x1="0" y1="10" x2="80" y2="10"/></svg>
+      </div>
+      <!-- Blood -->
+      <div class="modality-node">
+        <div class="modality-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2c0 0-6 7-6 12a6 6 0 0012 0c0-5-6-12-6-12z"/>
+          </svg>
+        </div>
+        <span class="modality-label">Blood</span>
+        <span class="modality-desc">Oncodea OncodeAi&trade; — molecular fingerprinting for cancer detection</span>
+      </div>
+      <!-- Connector -->
+      <div class="modality-connector">
+        <svg viewBox="0 0 80 20"><line x1="0" y1="10" x2="80" y2="10"/></svg>
+      </div>
+      <!-- Health Data -->
+      <div class="modality-node">
+        <div class="modality-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/>
+          </svg>
+        </div>
+        <span class="modality-label">Health Data</span>
+        <span class="modality-desc">Molecular Testing Labs — NGS, PGx, iFOB longitudinal data</span>
+      </div>
+      <!-- Connector -->
+      <div class="modality-connector">
+        <svg viewBox="0 0 80 20"><line x1="0" y1="10" x2="80" y2="10"/></svg>
+      </div>
+      <!-- AI Engine -->
+      <div class="modality-node">
+        <div class="modality-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+          </svg>
+        </div>
+        <span class="modality-label">AI Engine</span>
+        <span class="modality-desc">RealBusiness.AI — intelligence layer for clinical workflows</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FIVE DIAGNOSTIC FAILURES ========== -->
+<section class="failures">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Five Diagnostic Failures We Solve</h2>
+    </div>
+    <div class="failures-grid">
+      <div class="failure-card reveal">
+        <div class="failure-num">1</div>
+        <h4>Late Detection</h4>
+        <p>Most cancers are found at stage III or IV when survival rates drop dramatically.</p>
+      </div>
+      <div class="failure-card reveal">
+        <div class="failure-num">2</div>
+        <h4>Siloed Data</h4>
+        <p>Lab results, imaging, and genomics live in separate systems with no integration.</p>
+      </div>
+      <div class="failure-card reveal">
+        <div class="failure-num">3</div>
+        <h4>Slow Turnaround</h4>
+        <p>Weeks between sample collection and actionable results delay treatment decisions.</p>
+      </div>
+      <div class="failure-card reveal">
+        <div class="failure-num">4</div>
+        <h4>High Cost</h4>
+        <p>Current multi-test diagnostic workflows are expensive and fragmented for patients.</p>
+      </div>
+      <div class="failure-card reveal">
+        <div class="failure-num">5</div>
+        <h4>Access Gaps</h4>
+        <p>Rural and underserved communities lack access to advanced diagnostic technology.</p>
+      </div>
+    </div>
+    <div class="failures-callout reveal">
+      The urgency: 9.4 million missed cancer screenings post-COVID. Early detection saves lives.
+    </div>
+    <p class="failures-human reveal" style="text-align:center; max-width:700px; margin:28px auto 0; font-size:1.1rem; color:var(--gray-600); line-height:1.7;">Behind every statistic is a person. A parent. A child. Person Health exists to change these numbers — one breath, one test, one life at a time.</p>
+  </div>
+</section>
+
+<!-- ========== ANIMATED STATS ========== -->
+<section class="stats-bar" id="statsBar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <h3><span class="counter" data-prefix="$" data-suffix="B" data-from="0" data-to="40">$0B</span></h3>
+        <p>Addressable Market by 2030</p>
+      </div>
+      <div class="stat-item">
+        <h3><span class="counter" data-suffix="+" data-from="0" data-to="43">0+</span></h3>
+        <p>Patents Filed</p>
+      </div>
+      <div class="stat-item">
+        <h3><span class="counter" data-suffix="%+" data-from="0" data-to="15">0%+</span></h3>
+        <p>Market CAGR</p>
+      </div>
+      <div class="stat-item">
+        <h3><span class="counter" data-from="0" data-to="4">0</span></h3>
+        <p>Elite Clinical Partners</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COMPETITIVE ADVANTAGE ========== -->
+<section class="competitive">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Why Person Health Wins</h2>
+      <p>The only platform combining breath + blood + lab infrastructure + AI + a scalable operating platform designed to support large patient populations. No competitor has this full stack.</p>
+    </div>
+    <div class="competitive-visual reveal">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80" alt="Data network visualization">
+      <div class="competitive-visual-overlay">
+        <span>The only platform combining breath + blood + lab infrastructure + AI + a scalable operating platform designed to support large patient populations</span>
+      </div>
+    </div>
+    <div class="competitive-blocks">
+      <div class="comp-block reveal">
+        <h3>IP Protection</h3>
+        <p>43+ patents across sensors, chemistry, and AI methods create a defensible moat. Our proprietary MyBreathPrint and OncodeAi technologies are protected by extensive intellectual property spanning multiple jurisdictions and modalities.</p>
+      </div>
+      <div class="comp-block reveal">
+        <h3>Compounding Data Moat</h3>
+        <p>Every patient interaction improves our models. With active clinical partnerships at Mayo, Cleveland Clinic, MD Anderson, and Baylor, our data advantage compounds over time, making the platform smarter with every result.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== AUDIENCE TABS ========== -->
+<section class="audience" id="audience">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Built for Every Stakeholder</h2>
+    </div>
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="investors">For Investors</button>
+      <button class="tab-btn" data-tab="hospitals">For Research Hospitals</button>
+      <button class="tab-btn" data-tab="vendors">For Vendors</button>
+    </div>
+
+    <!-- Investors Panel -->
+    <div class="tab-panel active" id="tab-investors">
+      <div class="tab-content tab-content-with-image">
+        <div class="tab-content-text">
+          <h3>A Platform Play, Not a Single Product</h3>
+          <div class="investor-metrics" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;">
+            <div style="background:var(--light); border-radius:var(--radius-sm); padding:16px; text-align:center;">
+              <div style="font-family:var(--font-heading); font-weight:800; font-size:1.4rem; color:var(--primary);">$40-75B</div>
+              <div style="font-size:0.95rem; color:var(--gray-600);">Addressable Market by 2030</div>
+            </div>
+            <div style="background:var(--light); border-radius:var(--radius-sm); padding:16px; text-align:center;">
+              <div style="font-family:var(--font-heading); font-weight:800; font-size:1.4rem; color:var(--primary);">75%+</div>
+              <div style="font-size:0.95rem; color:var(--gray-600);">Gross Margins</div>
+            </div>
+            <div style="background:var(--light); border-radius:var(--radius-sm); padding:16px; text-align:center;">
+              <div style="font-family:var(--font-heading); font-weight:800; font-size:1.4rem; color:var(--primary);">80%+</div>
+              <div style="font-size:0.95rem; color:var(--gray-600);">Recurring Revenue</div>
+            </div>
+            <div style="background:var(--light); border-radius:var(--radius-sm); padding:16px; text-align:center;">
+              <div style="font-family:var(--font-heading); font-weight:800; font-size:1.4rem; color:var(--primary);">5:1+</div>
+              <div style="font-size:0.95rem; color:var(--gray-600);">LTV:CAC</div>
+            </div>
+          </div>
+          <p>Person Health is building the operating system for early disease detection. Our multi-modal approach creates multiple revenue streams across breath diagnostics, blood molecular fingerprinting, and enterprise AI.</p>
+          <p style="font-weight:600; color:var(--dark);"><strong>Elite clinical validation:</strong> Mayo Clinic, Cleveland Clinic, MD Anderson, Baylor</p>
+          <ul>
+            <li>43+ patents protecting proprietary technology across multiple modalities</li>
+            <li>Scalable platform designed for large patient populations</li>
+            <li>15%+ CAGR in a rapidly expanding diagnostic market</li>
+            <li>Boston Scientific lineage with proven medtech leadership</li>
+          </ul>
+          <a href="#contact" class="btn-primary" style="font-size:1.05rem; padding:16px 36px;">Request Investor Materials &rarr;</a>
+        </div>
+        <div class="tab-content-image">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="Investment data dashboard" style="border-radius:var(--radius); width:100%; object-fit:cover; aspect-ratio:4/3; box-shadow:0 12px 40px rgba(0,0,0,0.1);">
+        </div>
+      </div>
+    </div>
+
+    <!-- Hospitals Panel -->
+    <div class="tab-panel" id="tab-hospitals">
+      <div class="tab-content tab-content-with-image">
+        <div class="tab-content-text">
+          <h3>Be First with Multi-Modal AI Diagnostics</h3>
+          <p>Join Mayo Clinic, Cleveland Clinic, MD Anderson, and Baylor in pioneering the future of early detection. Our platform integrates seamlessly into existing clinical workflows.</p>
+          <ul>
+            <li>Non-invasive breath diagnostics with results in under one minute</li>
+            <li>Blood molecular fingerprinting with ML-powered analysis</li>
+            <li>CLIA-certified, CAP-accredited laboratory infrastructure</li>
+            <li>HIPAA/GDPR compliant AI decision support</li>
+            <li>Dedicated clinical integration team and support</li>
+          </ul>
+          <a href="#contact" class="btn-primary">Explore Clinical Partnership</a>
+        </div>
+        <div class="tab-content-image" style="display:flex; flex-direction:column; justify-content:center; gap:24px;">
+          <p style="font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:4px;">Clinical Partners</p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center;">
+            <img src="https://college.mayo.edu/media/mccms/site-assets/faviconsx2flogo/MCCMS_Logo_Black_New.svg" alt="Mayo Clinic" style="height:38px; object-fit:contain; justify-self:start;">
+            <img src="https://my.clevelandclinic.org/-/scassets/images/org/logo/logo-ccf.svg" alt="Cleveland Clinic" style="height:38px; object-fit:contain; justify-self:start;">
+            <img src="https://www.mdanderson.org/etc.clientlibs/mda/clientlibs/mda-web/clientlib-site/resources/images/xmda-logo.png.pagespeed.ic.N11qaULSMU.png" alt="MD Anderson" style="height:38px; object-fit:contain; justify-self:start;">
+            <img src="https://www.baylor.edu/themes/custom/baylor_united_2/logo.svg" alt="Baylor" style="height:38px; object-fit:contain; justify-self:start;">
+          </div>
+          <div style="border-top:1px solid #e2e8f0; padding-top:20px; margin-top:4px;">
+            <p style="font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:12px;">Industry Lineage</p>
+            <svg viewBox="0 0 200 24" style="height:28px;" xmlns="http://www.w3.org/2000/svg"><text x="0" y="18" font-family="'Outfit',sans-serif" font-weight="700" font-size="16" fill="#0a1628">Boston Scientific</text></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vendors Panel -->
+    <div class="tab-panel" id="tab-vendors">
+      <div class="tab-content tab-content-with-image">
+        <div class="tab-content-text">
+          <h3>Power the Future of Diagnostics</h3>
+          <p>We are seeking strategic vendors and technology partners to help scale the Person Health platform globally.</p>
+          <p><strong>Who We're Looking For:</strong></p>
+          <ul>
+            <li>Sensor and hardware manufacturers for point-of-care devices</li>
+            <li>Cloud infrastructure and data pipeline providers</li>
+            <li>Regulatory and compliance consulting partners</li>
+            <li>Distribution and logistics partners for lab services</li>
+          </ul>
+          <p><strong>Benefits:</strong></p>
+          <ul>
+            <li>Access to a growing multi-modal diagnostic network</li>
+            <li>Integration with a multi-modal diagnostic platform</li>
+            <li>Long-term partnership opportunities with revenue share</li>
+          </ul>
+          <a href="#contact" class="btn-primary">Become a Partner</a>
+        </div>
+        <div class="tab-content-image">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80" alt="Technology partnership" style="border-radius:var(--radius); width:100%; object-fit:cover; aspect-ratio:4/3; box-shadow:0 12px 40px rgba(0,0,0,0.1);">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img reveal-left">
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" alt="Team collaborating">
+      </div>
+      <div class="about-text reveal-right">
+        <h2>Our Story</h2>
+        <p><strong>Foundational Belief:</strong> Disease should be detected before symptoms appear. Every person deserves access to the kind of early detection that saves lives.</p>
+        <p><strong>Mission:</strong> To build the world's first integrated multi-modal diagnostic platform that makes early disease detection accessible, accurate, and affordable.</p>
+        <p><strong>Origins:</strong> Person Health was built from the convergence of a University of Minnesota spinout (VocxiHealth), molecular diagnostics innovator Oncodea, and the laboratory infrastructure of MTL/CareNexa. Together, these organizations form the foundation of the Health OS.</p>
+        <p><strong>Team:</strong> Our scientific founders hold 80+ patents across chemistry, sensors, and machine learning. Our leadership team brings decades of experience from Boston Scientific, Mayo Clinic, and leading health technology companies.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COMMUNITY ========== -->
+<section class="community">
+  <div class="container">
+    <div class="community-inner">
+      <div class="community-text reveal-left">
+        <h2>Building a Community of Change</h2>
+        <p>We believe that the future of healthcare is collaborative. Person Health connects patients, clinicians, researchers, and technologists around a shared mission: detecting disease earlier.</p>
+        <p>Our growing network of clinical partners, research institutions, and technology collaborators is creating a new standard for proactive health management.</p>
+      </div>
+      <div class="community-img reveal-right">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80" alt="Community of people">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LEADERSHIP & ADVISORY BOARD ========== -->
+<section class="team-section" id="team">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center; max-width:720px; margin:0 auto 56px;">
+      <h2 style="font-family:var(--font-heading); font-weight:700; font-size:clamp(2.2rem,5vw,3.5rem); color:var(--dark); margin-bottom:12px;">The Team Behind the Platform</h2>
+      <p style="color:var(--gray-600); font-size:1.05rem;">World-class leaders in diagnostics, AI, and clinical science driving the future of early detection.</p>
+    </div>
+
+    <!-- Leadership Team — Horizontal Scroll -->
+    <div class="team-carousel reveal">
+      <div class="team-card">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="Chief Executive Officer" class="team-headshot">
+        <h3 class="team-name">Chief Executive Officer</h3>
+        <p class="team-bio">Former medtech executive with 20+ years building diagnostic platforms. Boston Scientific lineage.</p>
+      </div>
+      <div class="team-card">
+        <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&q=80" alt="Chief Operating Officer" class="team-headshot">
+        <h3 class="team-name">Chief Operating Officer</h3>
+        <p class="team-bio">Healthcare operations leader. Driving commercial strategy across health systems nationwide.</p>
+      </div>
+      <div class="team-card">
+        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80" alt="Chief Scientific Officer" class="team-headshot">
+        <h3 class="team-name">Chief Scientific Officer</h3>
+        <p class="team-bio">PhD in Cancer Biology. 80+ patents. Pioneer in breath-based diagnostics.</p>
+      </div>
+      <div class="team-card">
+        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80" alt="Chief Technology Officer" class="team-headshot">
+        <h3 class="team-name">Chief Technology Officer</h3>
+        <p class="team-bio">AI and machine learning architect. Building the intelligence layer connecting diagnostic modalities.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SCIENTIFIC & CLINICAL ADVISORY BOARD ========== -->
+<section class="advisory-board">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center; margin-bottom:48px;">
+      <h2 style="font-family:var(--font-heading); font-weight:700; font-size:clamp(2.2rem,5vw,3.5rem); color:var(--white); margin-bottom:12px;">Scientific &amp; Clinical Advisory Board</h2>
+      <p style="color:rgba(255,255,255,0.5); font-size:1rem;">Validated by the most trusted names in clinical medicine.</p>
+    </div>
+    <div class="advisory-badges reveal">
+      <div class="advisory-badge">
+        <div class="advisory-badge-name">Mayo Clinic</div>
+        <div class="advisory-badge-sub">Clinical Validation Partner</div>
+      </div>
+      <div class="advisory-badge">
+        <div class="advisory-badge-name">Cleveland Clinic</div>
+        <div class="advisory-badge-sub">Clinical Research Partner</div>
+      </div>
+      <div class="advisory-badge">
+        <div class="advisory-badge-name">MD Anderson</div>
+        <div class="advisory-badge-sub">Oncology Validation Partner</div>
+      </div>
+      <div class="advisory-badge">
+        <div class="advisory-badge-name">Baylor</div>
+        <div class="advisory-badge-sub">Clinical Study Partner</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-card reveal">
+      <h2>Start a Conversation</h2>
+      <p>Tell us about your interest and we will connect you with the right team.</p>
+      <div class="audience-btns">
+        <button class="audience-btn active" data-audience="investor">Investor</button>
+        <button class="audience-btn" data-audience="hospital">Hospital / Research</button>
+        <button class="audience-btn" data-audience="vendor">Vendor / Partner</button>
+      </div>
+      <form id="contactForm" onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="Jane" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" placeholder="Smith" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Work Email</label>
+          <input type="email" id="email" placeholder="jane@company.com" required>
+        </div>
+        <div class="form-group">
+          <label for="org">Organization</label>
+          <input type="text" id="org" placeholder="Your organization">
+        </div>
+        <div class="form-group">
+          <label for="interest">Area of Interest</label>
+          <select id="interest">
+            <option value="">Select one...</option>
+            <option value="investment">Investment Opportunity</option>
+            <option value="clinical">Clinical Partnership</option>
+            <option value="vendor">Vendor / Technology Partnership</option>
+            <option value="research">Research Collaboration</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Tell us more about your interest..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand-text">
+          <img src="../logos/logo-b-blue-white-nav.png" alt="Person Health" style="height:40px;">
+        </div>
+        <p>Detecting disease before symptoms appear. The multi-modal Health OS for early detection.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#platform">VocxiHealth</a>
+        <a href="#platform">Oncodea</a>
+        <a href="#platform">RealBusiness.AI</a>
+        <a href="#features">Science</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#about">About Us</a>
+        <a href="#audience">Partners</a>
+        <a href="#">Careers</a>
+        <a href="#">News</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#">Publications</a>
+        <a href="#">Clinical Studies</a>
+        <a href="#">Patent Portfolio</a>
+        <a href="#">Press Kit</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">HIPAA Notice</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Person Health. All rights reserved.</span>
+      <div>
+        <a href="#">LinkedIn</a>
+        <a href="#">Twitter</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+(function() {
+  'use strict';
+
+  // ===== NAVBAR SCROLL =====
+  var navbar = document.getElementById('navbar');
+  function handleNavScroll() {
+    if (window.scrollY > 80) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', handleNavScroll, { passive: true });
+
+  // ===== HAMBURGER =====
+  var hamburger = document.getElementById('hamburger');
+  var navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', function() {
+    navLinks.classList.toggle('open');
+  });
+  var allNavLinks = navLinks.querySelectorAll('a');
+  for (var i = 0; i < allNavLinks.length; i++) {
+    allNavLinks[i].addEventListener('click', function() {
+      navLinks.classList.remove('open');
+    });
+  }
+
+  // ===== INTERSECTION OBSERVER — REVEAL =====
+  var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  var revealObserver = new IntersectionObserver(function(entries) {
+    for (var j = 0; j < entries.length; j++) {
+      if (entries[j].isIntersecting) {
+        entries[j].target.classList.add('visible');
+        revealObserver.unobserve(entries[j].target);
+      }
+    }
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  for (var k = 0; k < revealElements.length; k++) {
+    revealObserver.observe(revealElements[k]);
+  }
+
+  // ===== COUNTER ANIMATION =====
+  var counters = document.querySelectorAll('.counter');
+  var counterAnimated = false;
+  var statsBar = document.getElementById('statsBar');
+  var counterObserver = new IntersectionObserver(function(entries) {
+    for (var m = 0; m < entries.length; m++) {
+      if (entries[m].isIntersecting && !counterAnimated) {
+        counterAnimated = true;
+        animateCounters();
+        counterObserver.unobserve(entries[m].target);
+      }
+    }
+  }, { threshold: 0.3 });
+  if (statsBar) counterObserver.observe(statsBar);
+
+  function animateCounters() {
+    for (var n = 0; n < counters.length; n++) {
+      (function(counter) {
+        var from = parseInt(counter.getAttribute('data-from')) || 0;
+        var to = parseInt(counter.getAttribute('data-to')) || 0;
+        var prefix = counter.getAttribute('data-prefix') || '';
+        var suffix = counter.getAttribute('data-suffix') || '';
+        var duration = 2000;
+        var startTime = performance.now();
+
+        function updateCounter(currentTime) {
+          var elapsed = currentTime - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var current = Math.round(from + (to - from) * eased);
+          counter.textContent = prefix + current + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+          }
+        }
+        requestAnimationFrame(updateCounter);
+      })(counters[n]);
+    }
+  }
+
+  // ===== TAB SWITCHING =====
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var tabPanels = document.querySelectorAll('.tab-panel');
+  for (var p = 0; p < tabBtns.length; p++) {
+    (function(btn) {
+      btn.addEventListener('click', function() {
+        var target = btn.getAttribute('data-tab');
+        for (var q = 0; q < tabBtns.length; q++) tabBtns[q].classList.remove('active');
+        for (var r = 0; r < tabPanels.length; r++) tabPanels[r].classList.remove('active');
+        btn.classList.add('active');
+        document.getElementById('tab-' + target).classList.add('active');
+      });
+    })(tabBtns[p]);
+  }
+
+  // ===== AUDIENCE BUTTONS (CONTACT FORM) =====
+  var audienceBtns = document.querySelectorAll('.audience-btn');
+  for (var s = 0; s < audienceBtns.length; s++) {
+    (function(btn) {
+      btn.addEventListener('click', function() {
+        for (var t = 0; t < audienceBtns.length; t++) audienceBtns[t].classList.remove('active');
+        btn.classList.add('active');
+      });
+    })(audienceBtns[s]);
+  }
+
+  // ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
+  var anchors = document.querySelectorAll('a[href^="#"]');
+  for (var u = 0; u < anchors.length; u++) {
+    (function(anchor) {
+      anchor.addEventListener('click', function(e) {
+        var target = document.querySelector(anchor.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    })(anchors[u]);
+  }
+
+})();
+</script>
+
+</body>
+</html>

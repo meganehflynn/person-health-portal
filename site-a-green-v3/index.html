@@ -1,0 +1,2591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Person Health — Detect Disease Before Symptoms</title>
+  <meta name="description" content="Person Health combines breath diagnostics, blood molecular fingerprinting, lab infrastructure, and AI to detect disease before symptoms appear.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS CUSTOM PROPERTIES
+       ======================================== */
+    :root {
+      --primary: #024653;
+      --accent: #05D16E;
+      --accent-hover: #04b85f;
+      --light-tint: #f0faf4;
+      --white: #ffffff;
+      --text-dark: #1a1a1a;
+      --text-mid: #4a5568;
+      --text-light: #6b7280;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --shadow-xl: 0 16px 48px rgba(0,0,0,0.15);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --container: 1200px;
+      --section-pad: clamp(80px, 10vw, 120px);
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* ========================================
+       RESET & BASE
+       ======================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-dark);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.3s;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      font-family: var(--font-body);
+    }
+
+    .container {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ========================================
+       ANIMATIONS
+       ======================================== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-in-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .fade-in-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ========================================
+       SECTION LABEL
+       ======================================== */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      color: var(--primary);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .section-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-mid);
+      max-width: 700px;
+      line-height: 1.7;
+    }
+
+    /* ========================================
+       BUTTONS
+       ======================================== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 18px 40px;
+      background: var(--accent);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 14px rgba(5,209,110,0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(5,209,110,0.4);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 36px;
+      background: transparent;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.05rem;
+      border-radius: 8px;
+      border: 2px solid var(--primary);
+      transition: all 0.3s;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-outline-light {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 18px 40px;
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.4);
+      transition: all 0.3s;
+    }
+
+    .btn-outline-light:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: var(--white);
+    }
+
+    /* ========================================
+       NAVBAR
+       ======================================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: var(--white);
+      transition: box-shadow 0.3s;
+      height: 72px;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      transition: color 0.3s;
+      letter-spacing: 0.2px;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-cta {
+      padding: 10px 22px;
+      background: var(--accent);
+      color: var(--white) !important;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .mobile-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      padding: 8px;
+    }
+
+    .mobile-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--primary);
+      transition: all 0.3s;
+    }
+
+    /* ========================================
+       HERO CAROUSEL
+       ======================================== */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 90vh;
+      max-height: none;
+      overflow: hidden;
+      margin-top: 72px;
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .hero-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(2,70,83,0.85) 0%, rgba(2,70,83,0.6) 50%, rgba(2,70,83,0.45) 100%);
+    }
+
+    .hero-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      z-index: 2;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 24px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(3rem, 6vw, 5rem);
+      color: var(--white);
+      line-height: 1.08;
+      margin-bottom: 24px;
+      max-width: 800px;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.25rem, 2vw, 1.4rem);
+      color: rgba(255,255,255,0.85);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-dots {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 12px;
+    }
+
+    .hero-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .hero-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(5,209,110,0.5);
+    }
+
+    /* ========================================
+       ADVANTAGES — HORIZONTAL STRIP
+       ======================================== */
+    .advantages {
+      background: var(--light-tint);
+      padding: 80px 0;
+    }
+
+    .advantages .container {
+      overflow: visible;
+    }
+
+    .advantages-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .advantages-strip {
+      display: flex;
+      gap: 32px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 12px;
+    }
+
+    .advantages-strip::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .advantages-strip::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+      border-radius: 4px;
+    }
+
+    .advantages-strip::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    .adv-card {
+      flex: 0 0 250px;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 32px 26px;
+      border-left: 4px solid var(--accent);
+      box-shadow: var(--shadow-sm);
+      scroll-snap-align: start;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .adv-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .adv-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--light-tint);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+
+    .adv-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .adv-card h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .adv-card p {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    /* ========================================
+       PLATFORM — OVERLAPPING CARDS
+       ======================================== */
+    .platform {
+      padding: var(--section-pad) 0;
+      background: var(--white);
+    }
+
+    .platform-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .platform-header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .platform-cards {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .platform-card {
+      flex: 1;
+      min-width: 300px;
+      max-width: 360px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      transition: transform 0.4s, box-shadow 0.4s;
+      position: relative;
+    }
+
+    .platform-card:nth-child(2) {
+      top: 0;
+    }
+
+    .platform-card:nth-child(3) {
+      top: 0;
+    }
+
+    .platform-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .platform-card-logo {
+      height: 40px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .platform-card-logo img {
+      height: 40px;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .platform-card-logo svg {
+      height: 36px;
+      width: auto;
+      max-width: 100%;
+      flex-shrink: 0;
+    }
+
+    .platform-card h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .platform-card p {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .platform-card-tag {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 5px 14px;
+      background: var(--light-tint);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ========================================
+       MODALITIES DIAGRAM
+       ======================================== */
+    .modalities {
+      padding: var(--section-pad) 0;
+      background: var(--light-tint);
+    }
+
+    .modalities-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .modalities-header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .modalities-hub {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, rgba(2,70,83,0.18) 0%, rgba(2,70,83,0.10) 25%, rgba(5,209,110,0.06) 45%, rgba(5,209,110,0.02) 65%, transparent 85%);
+    }
+
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(5,209,110,0.5), 0 8px 32px rgba(2,70,83,0.3); }
+      50% { box-shadow: 0 0 0 18px rgba(5,209,110,0.08), 0 8px 32px rgba(2,70,83,0.3); }
+      100% { box-shadow: 0 0 0 0 rgba(5,209,110,0), 0 8px 32px rgba(2,70,83,0.3); }
+    }
+
+    @keyframes spoke-glow {
+      0%, 100% { border-color: var(--border); box-shadow: var(--shadow-md); }
+      50% { border-color: var(--accent); box-shadow: 0 4px 20px rgba(5,209,110,0.25); }
+    }
+
+    .mod-center {
+      grid-column: 2;
+      grid-row: 2;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      width: 240px;
+      height: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-shadow: 0 8px 32px rgba(2,70,83,0.3);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      animation: pulse-ring 3s ease-out infinite;
+      border: 3px solid var(--accent);
+    }
+
+    .mod-center h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+
+    .mod-center p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .mod-spoke.top-left { animation: spoke-glow 6s ease-in-out 0s infinite; }
+    .mod-spoke.top-right { animation: spoke-glow 6s ease-in-out 1.5s infinite; }
+    .mod-spoke.bot-left { animation: spoke-glow 6s ease-in-out 3s infinite; }
+    .mod-spoke.bot-right { animation: spoke-glow 6s ease-in-out 4.5s infinite; }
+
+    .mod-spoke {
+      background: rgba(255,255,255,0.88);
+      border-radius: var(--radius-md);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      transition: transform 0.3s, background 0.3s;
+      border: 2px solid rgba(5,209,110,0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    .mod-spoke:hover {
+      transform: scale(1.04);
+      background: rgba(255,255,255,0.95);
+      border-color: var(--accent);
+    }
+
+    .mod-spoke-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      background: var(--light-tint);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .mod-spoke-icon svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    .mod-spoke h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .mod-spoke p {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.5;
+    }
+
+    .mod-spoke.top-left { grid-column: 1; grid-row: 1; }
+    .mod-spoke.top-right { grid-column: 3; grid-row: 1; }
+    .mod-spoke.bot-left { grid-column: 1; grid-row: 3; }
+    .mod-spoke.bot-right { grid-column: 3; grid-row: 3; }
+
+    /* ========================================
+       FIVE DIAGNOSTIC FAILURES
+       ======================================== */
+    .failures {
+      background: var(--primary);
+      padding: var(--section-pad) 0;
+      color: var(--white);
+    }
+
+    .failures-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .failures-header .section-label {
+      color: var(--accent);
+    }
+
+    .failures-header .section-title {
+      color: var(--white);
+    }
+
+    .failures-header .section-subtitle {
+      color: rgba(255,255,255,0.7);
+      margin: 0 auto;
+    }
+
+    .failures-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .failure-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: 32px 24px;
+      text-align: center;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .failure-card:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-4px);
+    }
+
+    .failure-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 18px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+    }
+
+    .failure-card h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .failure-card p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+    }
+
+    .failures-callout {
+      text-align: center;
+      padding: 28px 32px;
+      background: rgba(5,209,110,0.12);
+      border: 1px solid rgba(5,209,110,0.25);
+      border-radius: var(--radius-md);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .failures-callout p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* ========================================
+       COMPETITIVE ADVANTAGE
+       ======================================== */
+    .competitive {
+      padding: var(--section-pad) 0;
+      background: linear-gradient(rgba(2,70,83,0.88), rgba(2,70,83,0.92)), url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1920&q=80') center/cover no-repeat;
+      color: var(--white);
+      position: relative;
+    }
+
+    .competitive-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .competitive-header .section-subtitle {
+      margin: 0 auto;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .competitive-header .section-title {
+      color: var(--white);
+    }
+
+    .competitive-band {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .comp-stat {
+      text-align: center;
+      flex: 1;
+      min-width: 200px;
+      max-width: 280px;
+      padding: 32px 24px;
+      background: rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+    }
+
+    .comp-stat-num {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(2.8rem, 4vw, 3.5rem);
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .comp-stat h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .comp-stat p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.65);
+    }
+
+    /* ========================================
+       PATIENT STORIES
+       ======================================== */
+    .patient-stories {
+      padding: var(--section-pad) 0;
+      background: var(--light-tint);
+    }
+
+    .stories-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .stories-header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .stories-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .story-card {
+      display: flex;
+      gap: 0;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .story-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .story-img {
+      width: 180px;
+      min-height: 220px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .story-content {
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .story-quote {
+      font-size: 1.1rem;
+      color: var(--text-mid);
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      padding-top: 16px;
+      position: relative;
+    }
+
+    .story-quote::before {
+      content: '\201C';
+      font-size: 3rem;
+      color: var(--accent);
+      font-family: Georgia, serif;
+      position: absolute;
+      top: -8px;
+      left: 0;
+      line-height: 1;
+    }
+
+    .story-author {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+
+    .story-role {
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+
+    /* ========================================
+       AUDIENCE MEGA-GRID
+       ======================================== */
+    .audience {
+      padding: var(--section-pad) 0;
+      background: var(--white);
+    }
+
+    .audience-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .audience-header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .audience-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .audience-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .audience-card-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--light-tint);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: var(--accent);
+    }
+
+    .audience-card-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .audience-card h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .audience-card p {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .audience-card ul {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .audience-card ul li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .audience-card ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .audience-card .btn-primary {
+      margin-top: auto;
+      align-self: flex-start;
+      padding: 14px 28px;
+      font-size: 1rem;
+    }
+
+    /* ========================================
+       ABOUT — EDITORIAL LAYOUT
+       ======================================== */
+    .about {
+      padding: var(--section-pad) 0;
+      background: var(--light-tint);
+    }
+
+    .about-intro {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 56px;
+    }
+
+    .about-intro h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      color: var(--primary);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .about-intro p {
+      font-size: 1.2rem;
+      color: var(--text-mid);
+      line-height: 1.8;
+    }
+
+    .about-highlights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto 56px;
+    }
+
+    .about-highlight-card {
+      padding: 28px 28px;
+      background: var(--white);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .about-highlight-card p {
+      font-weight: 500;
+      color: var(--primary);
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin-bottom: 56px;
+    }
+
+    .about-image {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .about-image img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+    }
+
+    .about-text p {
+      font-size: 1.1rem;
+      color: var(--text-mid);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .about-partners-section {
+      text-align: center;
+    }
+
+    .about-partners-section h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .about-partners {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .about-partner-tag {
+      padding: 12px 24px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60px;
+      min-width: 160px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .about-partner-tag:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .about-partner-tag img {
+      height: 36px;
+      width: auto;
+      max-width: 150px;
+      object-fit: contain;
+    }
+
+    /* ========================================
+       CONTACT
+       ======================================== */
+    .contact {
+      padding: var(--section-pad) 0;
+      background: var(--white);
+    }
+
+    .contact-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .contact-header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .contact-audience-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .contact-audience-btn {
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      background: var(--light-tint);
+      color: var(--primary);
+      border: 2px solid transparent;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .contact-audience-btn.active,
+    .contact-audience-btn:hover {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .contact-form {
+      max-width: 680px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .contact-form .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-dark);
+      background: var(--white);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(5,209,110,0.12);
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .contact-form .btn-primary {
+      justify-content: center;
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+    }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    .footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 72px 0 32px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 56px;
+    }
+
+    .footer-brand {
+      max-width: 280px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+
+    .footer-brand p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+    }
+
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-col ul li a {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.3s;
+    }
+
+    .footer-col ul li a:hover {
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-bottom p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-bottom-links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .footer-bottom-links a:hover {
+      color: var(--white);
+    }
+
+    /* ========================================
+       LEADERSHIP & ADVISORS
+       ======================================== */
+    .leadership {
+      padding: var(--section-pad) 0;
+      background: var(--white);
+    }
+
+    .leadership-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .leadership-header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto 60px;
+    }
+
+    .leader-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .leader-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .leader-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .leader-card-body {
+      padding: 24px 28px;
+    }
+
+    .leader-card-body h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .leader-card-body .leader-role {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .leader-card-body p {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    .advisory-label {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .advisory-label h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--primary);
+    }
+
+    .advisory-row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .advisory-badge {
+      background: var(--light-tint);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 28px;
+      text-align: center;
+      min-width: 200px;
+      flex: 1;
+      max-width: 260px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .advisory-badge:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .advisory-badge-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 12px;
+      background: var(--white);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .advisory-badge-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .advisory-badge h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .advisory-badge p {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+    }
+
+    /* ========================================
+       RESPONSIVE — TABLET
+       ======================================== */
+    @media (max-width: 1024px) {
+      .platform-cards {
+        flex-wrap: wrap;
+      }
+
+      .platform-card:nth-child(2),
+      .platform-card:nth-child(3) {
+        top: 0;
+      }
+
+      .failures-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .audience-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-highlights {
+        grid-template-columns: 1fr;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .about-image img {
+        height: 360px;
+      }
+
+      .leadership-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .stories-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modalities-hub {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+      }
+
+      .mod-center {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 200px;
+        height: 200px;
+      }
+
+      .mod-spoke.top-left { grid-column: 1; grid-row: 1; }
+      .mod-spoke.top-right { grid-column: 2; grid-row: 1; }
+      .mod-spoke.bot-left { grid-column: 1; grid-row: 3; }
+      .mod-spoke.bot-right { grid-column: 2; grid-row: 3; }
+    }
+
+    /* ========================================
+       RESPONSIVE — MOBILE
+       ======================================== */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        flex-direction: column;
+        padding: 24px;
+        gap: 20px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .mobile-toggle {
+        display: flex;
+      }
+
+      .hero {
+        min-height: 90vh;
+        max-height: none;
+      }
+
+      .hero-title {
+        font-size: clamp(2.2rem, 7vw, 3.5rem);
+      }
+
+      .adv-card {
+        flex: 0 0 260px;
+      }
+
+      .platform-card {
+        min-width: 100%;
+      }
+
+      .failures-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .modalities-hub {
+        grid-template-columns: 1fr;
+      }
+
+      .mod-center {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .mod-spoke.top-left { grid-column: 1; grid-row: 1; }
+      .mod-spoke.top-right { grid-column: 1; grid-row: 2; }
+      .mod-spoke.bot-left { grid-column: 1; grid-row: 4; }
+      .mod-spoke.bot-right { grid-column: 1; grid-row: 5; }
+
+      .story-card {
+        flex-direction: column;
+      }
+
+      .story-img {
+        width: 100%;
+        min-height: 200px;
+        height: 200px;
+      }
+
+      .story-content {
+        padding: 24px;
+      }
+
+      .audience-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .leadership-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .advisory-row {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .advisory-badge {
+        min-width: 100%;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-form {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .competitive-band {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .comp-stat {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================
+       NAVBAR
+       ====================================== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <img src="../logos/logo-a-green-nav.png" alt="Person Health" style="height:40px;">
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#platform">Platform</a></li>
+        <li><a href="#advantages">Advantages</a></li>
+        <li><a href="#audience">Partners</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#leadership">Team</a></li>
+        <li><a href="#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ======================================
+       HERO CAROUSEL
+       ====================================== -->
+  <section class="hero" id="hero">
+    <div class="hero-slide active" data-slide="0">
+      <img src="https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=1920&q=80" alt="Father holding baby" loading="eager">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Advancing Early Detection
+        </div>
+        <h1 class="hero-title">Detect Disease Before Symptoms.<br>Understand Health for Life.</h1>
+        <p class="hero-subtitle">Every day, diseases go undetected because our tools aren't good enough. We're changing that — with the first platform that sees what others miss.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Request Partnership Discussion <span>&rarr;</span></a>
+          <a href="#platform" class="btn-outline-light">Explore Our Platform</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-slide" data-slide="1">
+      <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=1920&q=80" alt="Golden hour nature" loading="lazy">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Integrated Health OS
+        </div>
+        <h1 class="hero-title">Three Companies.<br>One Integrated Health OS.</h1>
+        <p class="hero-subtitle">VocxiHealth, Oncodea, and RealBusiness.AI combine to form a unified platform for multi-modal diagnostics and population-scale health intelligence.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Request Partnership Discussion <span>&rarr;</span></a>
+          <a href="#platform" class="btn-outline-light">Learn More</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-slide" data-slide="2">
+      <img src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=1920&q=80" alt="Person at sunrise" loading="lazy">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Infrastructure for Understanding
+        </div>
+        <h1 class="hero-title">Building Infrastructure for Early Understanding.</h1>
+        <p class="hero-subtitle">From breath biomarkers to blood molecular fingerprinting, we are constructing the diagnostic infrastructure that makes early understanding possible.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Request Partnership Discussion <span>&rarr;</span></a>
+          <a href="#about" class="btn-outline-light">Our Story</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-dots">
+      <button class="hero-dot active" data-dot="0" aria-label="Slide 1"></button>
+      <button class="hero-dot" data-dot="1" aria-label="Slide 2"></button>
+      <button class="hero-dot" data-dot="2" aria-label="Slide 3"></button>
+    </div>
+  </section>
+
+  <!-- ======================================
+       KEY ADVANTAGES — HORIZONTAL STRIP
+       ====================================== -->
+  <section class="advantages" id="advantages">
+    <div class="container">
+      <div class="advantages-header fade-in">
+        <span class="section-label">Key Advantages</span>
+        <h2 class="section-title">Why Person Health</h2>
+      </div>
+      <div class="advantages-strip">
+        <div class="adv-card fade-in">
+          <div class="adv-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+            </svg>
+          </div>
+          <h4>Multi-Modal</h4>
+          <p>Multi-modal diagnostics: breath, blood, genomics, and AI working together for comprehensive insight.</p>
+        </div>
+        <div class="adv-card fade-in">
+          <div class="adv-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h4>Validation</h4>
+          <p>Clinically validated with leading academic medical centers including Mayo Clinic and Cleveland Clinic.</p>
+        </div>
+        <div class="adv-card fade-in">
+          <div class="adv-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h4>IP Protection</h4>
+          <p>Dozens of patents across sensors, chemistry, and AI methods protecting our innovations.</p>
+        </div>
+        <div class="adv-card fade-in">
+          <div class="adv-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
+              <line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/>
+            </svg>
+          </div>
+          <h4>Lab Infrastructure</h4>
+          <p>Built on CLIA-certified, CAP-accredited lab infrastructure ensuring regulatory compliance.</p>
+        </div>
+        <div class="adv-card fade-in">
+          <div class="adv-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+            </svg>
+          </div>
+          <h4>Early Detection</h4>
+          <p>Designed to detect disease signals before symptoms appear, when treatment is most effective.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       PLATFORM — OVERLAPPING CARDS
+       ====================================== -->
+  <section class="platform" id="platform">
+    <div class="container">
+      <div class="platform-header fade-in">
+        <span class="section-label">Our Platform</span>
+        <h2 class="section-title">Three Companies, One Health OS</h2>
+        <p class="section-subtitle">We combine breath diagnostics, blood molecular fingerprinting, advanced laboratory infrastructure, and agentic AI to bring earlier insight to patients and clinicians.</p>
+      </div>
+      <div class="platform-cards">
+        <div class="platform-card fade-in">
+          <div class="platform-card-logo">
+            <img src="https://vocxihealth.com/wp-content/uploads/VOC2127_Vocxi_Logo_2Color_Lig.png" alt="VocxiHealth">
+          </div>
+          <h3>VocxiHealth</h3>
+          <p>Clinically validated breath diagnostics with results in under one minute. Non-invasive VOC detection providing rapid, patient-friendly screening at the point of care.</p>
+          <span class="platform-card-tag">43+ Patents</span>
+        </div>
+        <div class="platform-card fade-in">
+          <div class="platform-card-logo">
+            <img src="https://oncodea.com/wp-content/uploads/2024/12/Screen-Shot-2020-05-14-at-11.51.34-AM.png" alt="Oncodea">
+          </div>
+          <h3>Oncodea</h3>
+          <p>Blood molecular fingerprinting powered by machine learning for cancer detection. The VERITY Study is actively validating multi-cancer early detection capabilities.</p>
+          <span class="platform-card-tag">VERITY Study Active</span>
+        </div>
+        <div class="platform-card fade-in">
+          <div class="platform-card-logo">
+            <svg width="160" height="40" viewBox="0 0 220 55" xmlns="http://www.w3.org/2000/svg">
+              <text x="0" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#024653">Real</text>
+              <text x="58" y="35" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#05D16E">Business</text>
+              <rect x="164" y="14" rx="6" ry="6" width="50" height="30" fill="#024653"/>
+              <text x="172" y="35" font-family="Inter,sans-serif" font-size="19" font-weight="700" fill="white">.AI</text>
+            </svg>
+          </div>
+          <h3>RealBusiness.AI</h3>
+          <p>Agentic AI platform providing a scalable operating system for large patient populations. HIPAA and GDPR compliant intelligence layer for clinical workflows.</p>
+          <span class="platform-card-tag">HIPAA/GDPR Compliant</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       MODALITIES DIAGRAM
+       ====================================== -->
+  <section class="modalities" id="modalities">
+    <div class="container">
+      <div class="modalities-header fade-in">
+        <span class="section-label">Diagnostic Modalities</span>
+        <h2 class="section-title">Integrated Multi-Modal Architecture</h2>
+        <p class="section-subtitle">Four distinct diagnostic modalities converging into a single Health OS for comprehensive patient insight.</p>
+      </div>
+      <div class="modalities-hub">
+        <div class="mod-spoke top-left fade-in">
+          <div class="mod-spoke-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22c-4 0-8-2-8-6s3-6 3-10a5 5 0 0 1 10 0c0 4 3 6 3 10s-4 6-8 6z"/>
+              <path d="M10 2c0 .5-.5 1-1 1s-1-.5-1-1"/>
+            </svg>
+          </div>
+          <h4>Breath</h4>
+          <p>VocxiHealth MyBreathPrint&reg;<br>Non-invasive VOC detection</p>
+        </div>
+        <div class="mod-spoke top-right fade-in">
+          <div class="mod-spoke-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v6m0 4v10M6 12a6 6 0 0 0 12 0"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+          </div>
+          <h4>Blood</h4>
+          <p>Oncodea OncodeAi&trade;<br>Molecular fingerprinting</p>
+        </div>
+        <div class="mod-center fade-in">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 8px;">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+          <h3 style="font-size: 1.3rem; margin-bottom: 2px; letter-spacing: -0.02em;">Person Health</h3>
+          <p style="font-size: 0.85rem;">Integrated Health OS</p>
+        </div>
+        <div class="mod-spoke bot-left fade-in">
+          <div class="mod-spoke-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/>
+            </svg>
+          </div>
+          <h4>Longitudinal Health Data</h4>
+          <p>Molecular Testing Labs<br>NGS, PGx, iFOB</p>
+        </div>
+        <div class="mod-spoke bot-right fade-in">
+          <div class="mod-spoke-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="16" height="16" rx="2"/>
+              <path d="M9 9h6v6H9z"/>
+              <path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>
+            </svg>
+          </div>
+          <h4>AI Engine</h4>
+          <p>RealBusiness.AI<br>Intelligence layer</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       FIVE DIAGNOSTIC FAILURES
+       ====================================== -->
+  <section class="failures" id="failures">
+    <div class="container">
+      <div class="failures-header fade-in">
+        <span class="section-label">The Problem</span>
+        <h2 class="section-title">Five Failures of Today's Diagnostics</h2>
+        <p class="section-subtitle">The current diagnostic paradigm fails patients at every stage. Person Health was built to change this.</p>
+      </div>
+      <div class="failures-grid">
+        <div class="failure-card fade-in">
+          <div class="failure-num">1</div>
+          <h4>Invasive</h4>
+          <p>Biopsies, scopes, and procedures with inherent patient risk and discomfort.</p>
+        </div>
+        <div class="failure-card fade-in">
+          <div class="failure-num">2</div>
+          <h4>Slow</h4>
+          <p>Results take 3 to 21 days, delaying critical treatment decisions.</p>
+        </div>
+        <div class="failure-card fade-in">
+          <div class="failure-num">3</div>
+          <h4>Expensive</h4>
+          <p>$1,500 to $6,000 per test, creating financial barriers to care.</p>
+        </div>
+        <div class="failure-card fade-in">
+          <div class="failure-num">4</div>
+          <h4>Limited Access</h4>
+          <p>Unavailable in 60% of U.S. counties, widening health disparities.</p>
+        </div>
+        <div class="failure-card fade-in">
+          <div class="failure-num">5</div>
+          <h4>Too Late</h4>
+          <p>71% of cancer deaths occur at Stage III/IV when detected too late.</p>
+        </div>
+      </div>
+      <div class="failures-callout fade-in">
+        <p>The urgency: 9.4 million missed cancer screenings post-COVID. Early detection infrastructure cannot wait.</p>
+        <p style="margin-top: 16px; color: rgba(255,255,255,0.85); font-size: 0.95rem; font-weight: 400; font-style: italic;">Behind every statistic is a person. A parent. A child. Person Health exists to change these numbers — one breath, one test, one life at a time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       COMPETITIVE ADVANTAGE
+       ====================================== -->
+  <section class="competitive" id="competitive">
+    <div class="container">
+      <div class="competitive-header fade-in">
+        <span class="section-label">Competitive Position</span>
+        <h2 class="section-title">The Only Integrated Platform</h2>
+        <p class="section-subtitle">The only platform combining breath + blood + lab infrastructure + AI — built on a scalable operating platform designed to support large patient populations.</p>
+      </div>
+      <div class="competitive-band">
+        <div class="comp-stat fade-in">
+          <div class="comp-stat-num">43+</div>
+          <h4>Patents Granted</h4>
+          <p>Across sensors, chemistry, AI methods, and diagnostic workflows</p>
+        </div>
+        <div class="comp-stat fade-in">
+          <div class="comp-stat-num">15%+</div>
+          <h4>Market CAGR</h4>
+          <p>Rapidly expanding diagnostic market with compounding data moat</p>
+        </div>
+        <div class="comp-stat fade-in">
+          <div class="comp-stat-num">$40-75B</div>
+          <h4>Addressable Market</h4>
+          <p>Total addressable market by 2030 across diagnostics and AI</p>
+        </div>
+        <div class="comp-stat fade-in">
+          <div class="comp-stat-num">4</div>
+          <h4>Modalities Integrated</h4>
+          <p>Breath, blood, genomics, and AI in a single operating system</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       PATIENT STORIES
+       ====================================== -->
+  <section class="patient-stories" id="stories">
+    <div class="container">
+      <div class="stories-header fade-in">
+        <span class="section-label">Patient Stories</span>
+        <h2 class="section-title">Built Around People, Not Procedures</h2>
+        <p class="section-subtitle">Every data point we capture represents a person. Every algorithm we train serves a family. These are the stories that drive us.</p>
+      </div>
+      <div class="stories-grid">
+        <div class="story-card fade-in-left">
+          <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&q=80" alt="Diverse family" class="story-img">
+          <div class="story-content">
+            <p class="story-quote">Every family deserves to know sooner. Early detection means more time together, more birthdays, more ordinary moments that matter most.</p>
+            <p class="story-author">The Jensen Family</p>
+            <p class="story-role">Early Detection Advocates</p>
+          </div>
+        </div>
+        <div class="story-card fade-in-right">
+          <img src="https://images.unsplash.com/photo-1447452001602-7090c7ab2db3?w=800&q=80" alt="Elderly person" class="story-img">
+          <div class="story-content">
+            <p class="story-quote">A simple breath test changed everything. No needles, no waiting weeks. In under a minute, I had the peace of mind my family needed.</p>
+            <p class="story-author">Margaret, Age 72</p>
+            <p class="story-role">Screening Participant</p>
+          </div>
+        </div>
+        <div class="story-card fade-in-left">
+          <img src="https://images.unsplash.com/photo-1544126592-807ade215a0b?w=800&q=80" alt="Expectant mother" class="story-img">
+          <div class="story-content">
+            <p class="story-quote">When I learned I was expecting, I wanted every tool available to protect my family. Person Health's approach to health stewardship gave us confidence.</p>
+            <p class="story-author">Sarah M.</p>
+            <p class="story-role">New Mother &amp; Health Advocate</p>
+          </div>
+        </div>
+        <div class="story-card fade-in-right">
+          <img src="https://images.unsplash.com/photo-1493894473891-10fc1e5dbd22?w=800&q=80" alt="Mother and child" class="story-img">
+          <div class="story-content">
+            <p class="story-quote">Healthcare should adapt to us, not the other way around. A platform that sees the whole person, across time, is what our community needs.</p>
+            <p class="story-author">Dr. Alyssa Chen</p>
+            <p class="story-role">Community Health Director</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       AUDIENCE MEGA-GRID
+       ====================================== -->
+  <section class="audience" id="audience">
+    <div class="container">
+      <div class="audience-header fade-in">
+        <span class="section-label">Partner With Us</span>
+        <h2 class="section-title">Built for Every Stakeholder</h2>
+        <p class="section-subtitle">Whether you are an investor, a health system, or a technology vendor, Person Health offers a clear path to partnership and impact.</p>
+      </div>
+      <div class="audience-grid">
+        <!-- Investors -->
+        <div class="audience-card fade-in">
+          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80" alt="Business professionals reviewing strategy" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px;">
+          <div class="audience-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <h3>For Investors</h3>
+          <p>Platform company unifying multiple diagnostic modalities under one Health OS. Strong IP portfolio, clinical validation, and a compounding data moat create durable competitive advantages.</p>
+          <div style="background: var(--light-tint); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; border-left: 4px solid var(--accent);">
+            <p style="font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-bottom: 0; line-height: 1.8;">$40-75B addressable market by 2030 &nbsp;|&nbsp; 75%+ gross margins &nbsp;|&nbsp; 80%+ recurring revenue &nbsp;|&nbsp; 5:1+ LTV:CAC</p>
+          </div>
+          <ul>
+            <li>43+ patents across four modalities</li>
+            <li>$40-75B addressable market by 2030</li>
+            <li>Scalable platform designed for large patient populations</li>
+            <li>Revenue-generating lab infrastructure</li>
+            <li>Elite clinical validation: Mayo Clinic, Cleveland Clinic, MD Anderson, Baylor</li>
+          </ul>
+          <a href="#contact" class="btn-primary" style="padding: 16px 36px; font-size: 16px; box-shadow: 0 6px 20px rgba(5,209,110,0.4); background: var(--primary);">Start a Conversation <span>&rarr;</span></a>
+        </div>
+        <!-- Hospitals -->
+        <div class="audience-card fade-in">
+          <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&q=80" alt="Modern hospital facility" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px;">
+          <div class="audience-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 21v-4h6v4"/><path d="M10 9h4"/><path d="M12 7v4"/>
+            </svg>
+          </div>
+          <h3>For Research Hospitals</h3>
+          <p>Be first with multi-modal AI diagnostics. Mayo Clinic, Cleveland Clinic, MD Anderson, and Baylor are already engaged. Join the leading edge of early detection research and help shape the future of patient care.</p>
+          <div style="background: var(--light-tint); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; border-left: 4px solid var(--accent);">
+            <p style="font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-bottom: 0; line-height: 1.8;">Non-invasive screening &nbsp;|&nbsp; Results in minutes &nbsp;|&nbsp; CLIA/CAP accredited &nbsp;|&nbsp; HIPAA compliant</p>
+          </div>
+          <ul>
+            <li>Patient acquisition and enrollment support</li>
+            <li>Billable service lines from day one</li>
+            <li>Real-world evidence generation</li>
+            <li>Co-publication opportunities</li>
+            <li>Dedicated clinical integration team</li>
+          </ul>
+          <a href="#contact" class="btn-primary" style="padding: 16px 36px; font-size: 16px; box-shadow: 0 6px 20px rgba(5,209,110,0.4); background: var(--primary);">Start a Conversation <span>&rarr;</span></a>
+        </div>
+        <!-- Vendors -->
+        <div class="audience-card fade-in">
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80" alt="Business partnership handshake" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px;">
+          <div class="audience-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <h3>For Vendors</h3>
+          <p>Power the future of early diagnostics. We partner with lab equipment, hardware, sensor, EHR, and AI companies to build the next generation of health infrastructure. Our platform creates a new ecosystem of diagnostic innovation.</p>
+          <div style="background: var(--light-tint); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; border-left: 4px solid var(--accent);">
+            <p style="font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-bottom: 0; line-height: 1.8;">Multi-year agreements &nbsp;|&nbsp; Revenue share model &nbsp;|&nbsp; IP licensing &nbsp;|&nbsp; Co-development</p>
+          </div>
+          <ul>
+            <li>Early market entry into multi-modal diagnostics</li>
+            <li>Long-term supply and integration agreements</li>
+            <li>Co-development of new capabilities</li>
+            <li>IP protection and licensing opportunities</li>
+            <li>Access to growing clinical partner network</li>
+          </ul>
+          <a href="#contact" class="btn-primary" style="padding: 16px 36px; font-size: 16px; box-shadow: 0 6px 20px rgba(5,209,110,0.4); background: var(--primary);">Start a Conversation <span>&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       ABOUT — EDITORIAL TWO-COLUMN
+       ====================================== -->
+  <section class="about" id="about">
+    <div class="container">
+      <!-- Full-width intro -->
+      <div class="about-intro fade-in">
+        <span class="section-label">About Person Health</span>
+        <h3>Healthcare Organized Around People</h3>
+        <p>For too long, healthcare has been organized around institutions rather than individuals. Person Health exists to change this fundamental equation.</p>
+      </div>
+
+      <!-- Two highlight quotes side by side -->
+      <div class="about-highlights fade-in">
+        <div class="about-highlight-card">
+          <p>We are not building a diagnostic product. We are building infrastructure for early understanding and lifelong health stewardship.</p>
+        </div>
+        <div class="about-highlight-card" style="border-left-color: var(--primary);">
+          <p style="color: var(--primary);">We believe every person deserves to know their health story — early, clearly, and completely.</p>
+        </div>
+      </div>
+
+      <!-- Image + copy side by side (balanced) -->
+      <div class="about-grid">
+        <div class="about-image fade-in-left">
+          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80" alt="Doctor with patient representing person-centered care">
+        </div>
+        <div class="about-text fade-in-right">
+          <p><strong>Origins:</strong> Person Health was born from a University of Minnesota spinout (VocxiHealth), combined with molecular fingerprinting innovation (Oncodea) and a reference laboratory platform (MTL/CareNexa).</p>
+          <p><strong>Mission:</strong> We believe every person deserves access to early detection — regardless of where they live or what they can afford. That belief drives everything we build.</p>
+          <p><strong>Leadership:</strong> Our scientific founders hold 80+ patents across chemistry, sensors, and machine learning. Our executive team brings decades of experience from Boston Scientific and leading health technology companies.</p>
+        </div>
+      </div>
+
+      <!-- Clinical Partners — full width -->
+      <div class="about-partners-section fade-in">
+        <h4>Clinical Partners</h4>
+        <div class="about-partners">
+          <span class="about-partner-tag"><img src="https://college.mayo.edu/media/mccms/site-assets/faviconsx2flogo/MCCMS_Logo_Black_New.svg" alt="Mayo Clinic"></span>
+          <span class="about-partner-tag"><img src="https://my.clevelandclinic.org/-/scassets/images/org/logo/logo-ccf.svg" alt="Cleveland Clinic"></span>
+          <span class="about-partner-tag"><img src="https://www.mdanderson.org/etc.clientlibs/mda/clientlibs/mda-web/clientlib-site/resources/images/xmda-logo.png.pagespeed.ic.N11qaULSMU.png" alt="MD Anderson Cancer Center"></span>
+          <span class="about-partner-tag"><img src="https://www.baylor.edu/themes/custom/baylor_united_2/logo.svg" alt="Baylor University"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       LEADERSHIP & ADVISORS
+       ====================================== -->
+  <section class="leadership" id="leadership">
+    <div class="container">
+      <div class="leadership-header fade-in">
+        <span class="section-label">Our Team</span>
+        <h2 class="section-title">Leadership & Advisors</h2>
+        <p class="section-subtitle">Our team includes leaders from major medtech, AI, and healthcare organizations, supported by physician and scientific advisors with decades of clinical and research experience.</p>
+      </div>
+
+      <div class="leadership-grid">
+        <div class="leader-card fade-in">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80" alt="Chief Executive Officer">
+          <div class="leader-card-body">
+            <h4>Executive Leadership</h4>
+            <span class="leader-role">Chief Executive Officer</span>
+            <p>Former medtech executive with 20+ years building diagnostic platforms. Boston Scientific lineage.</p>
+          </div>
+        </div>
+        <div class="leader-card fade-in">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" alt="Chief Operating Officer">
+          <div class="leader-card-body">
+            <h4>Executive Leadership</h4>
+            <span class="leader-role">Chief Operating Officer</span>
+            <p>Healthcare operations leader. Driving commercial strategy across health systems nationwide.</p>
+          </div>
+        </div>
+        <div class="leader-card fade-in">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80" alt="Chief Scientific Officer">
+          <div class="leader-card-body">
+            <h4>Executive Leadership</h4>
+            <span class="leader-role">Chief Scientific Officer</span>
+            <p>PhD in Cancer Biology. 80+ patents. Pioneer in breath-based diagnostics.</p>
+          </div>
+        </div>
+        <div class="leader-card fade-in">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80" alt="Chief Technology Officer">
+          <div class="leader-card-body">
+            <h4>Executive Leadership</h4>
+            <span class="leader-role">Chief Technology Officer</span>
+            <p>AI and machine learning architect. Building the intelligence layer connecting diagnostic modalities.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="advisory-label fade-in">
+        <h3>Scientific & Clinical Advisory Board</h3>
+      </div>
+      <div class="advisory-row fade-in">
+        <div class="advisory-badge">
+          <div class="advisory-badge-icon" style="width: 64px; height: 64px; border-radius: 50%; background: var(--light-tint); overflow: hidden;">
+            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          </div>
+          <h4>[Advisor Name]</h4>
+          <p>Oncology, Mayo Clinic</p>
+        </div>
+        <div class="advisory-badge">
+          <div class="advisory-badge-icon" style="width: 64px; height: 64px; border-radius: 50%; background: var(--light-tint); overflow: hidden;">
+            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          </div>
+          <h4>[Advisor Name]</h4>
+          <p>Cardiology, Cleveland Clinic</p>
+        </div>
+        <div class="advisory-badge">
+          <div class="advisory-badge-icon" style="width: 64px; height: 64px; border-radius: 50%; background: var(--light-tint); overflow: hidden;">
+            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          </div>
+          <h4>[Advisor Name]</h4>
+          <p>Cancer Biology, MD Anderson</p>
+        </div>
+        <div class="advisory-badge">
+          <div class="advisory-badge-icon" style="width: 64px; height: 64px; border-radius: 50%; background: var(--light-tint); overflow: hidden;">
+            <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          </div>
+          <h4>[Advisor Name]</h4>
+          <p>Molecular Diagnostics, Baylor</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================
+       CONTACT
+       ====================================== -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-header fade-in">
+        <span class="section-label">Get In Touch</span>
+        <h2 class="section-title">Start a Conversation</h2>
+        <p class="section-subtitle">Tell us who you are and how we can work together. We respond to every inquiry within two business days.</p>
+      </div>
+      <div class="contact-audience-btns fade-in">
+        <button class="contact-audience-btn active" data-audience="investor">Investor</button>
+        <button class="contact-audience-btn" data-audience="health-system">Health System</button>
+        <button class="contact-audience-btn" data-audience="vendor">Vendor</button>
+      </div>
+      <form class="contact-form fade-in" id="contactForm">
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" name="name" required placeholder="Your full name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" required placeholder="you@organization.com">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="(555) 000-0000">
+        </div>
+        <div class="form-group">
+          <label for="organization">Organization *</label>
+          <input type="text" id="organization" name="organization" required placeholder="Your organization">
+        </div>
+        <div class="form-group full-width">
+          <label for="role">Your Role</label>
+          <input type="text" id="role" name="role" placeholder="e.g. Chief Medical Officer, Partner, VP Engineering">
+        </div>
+        <div class="form-group full-width">
+          <label for="message">Message *</label>
+          <textarea id="message" name="message" required placeholder="Tell us about your interest in Person Health and how we can help..."></textarea>
+        </div>
+        <div class="full-width">
+          <button type="submit" class="btn-primary">Submit Inquiry <span>&rarr;</span></button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ======================================
+       FOOTER
+       ====================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="../logos/logo-a-green-white-nav.png" alt="Person Health" style="height:40px;">
+          </div>
+          <p>Building infrastructure for early understanding and lifelong health stewardship through multi-modal diagnostics and AI.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="#platform">VocxiHealth</a></li>
+            <li><a href="#platform">Oncodea</a></li>
+            <li><a href="#platform">RealBusiness.AI</a></li>
+            <li><a href="#modalities">Health OS</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Partners</h4>
+          <ul>
+            <li><a href="#audience">Investors</a></li>
+            <li><a href="#audience">Health Systems</a></li>
+            <li><a href="#audience">Vendors</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#stories">Patient Stories</a></li>
+            <li><a href="#advantages">Why Person Health</a></li>
+            <li><a href="#failures">Our Mission</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">HIPAA Notice</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Person Health. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================
+       JAVASCRIPT
+       ====================================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      /* ========================================
+         NAVBAR SCROLL SHADOW
+         ======================================== */
+      var navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 10) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+
+      /* ========================================
+         MOBILE MENU TOGGLE
+         ======================================== */
+      var mobileToggle = document.getElementById('mobileToggle');
+      var navLinks = document.getElementById('navLinks');
+
+      mobileToggle.addEventListener('click', function() {
+        navLinks.classList.toggle('open');
+      });
+
+      var navAnchors = navLinks.querySelectorAll('a');
+      for (var i = 0; i < navAnchors.length; i++) {
+        navAnchors[i].addEventListener('click', function() {
+          navLinks.classList.remove('open');
+        });
+      }
+
+      /* ========================================
+         HERO CAROUSEL
+         ======================================== */
+      var slides = document.querySelectorAll('.hero-slide');
+      var dots = document.querySelectorAll('.hero-dot');
+      var currentSlide = 0;
+      var carouselInterval;
+
+      function goToSlide(index) {
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        currentSlide = index;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+      }
+
+      function nextSlide() {
+        goToSlide((currentSlide + 1) % slides.length);
+      }
+
+      function startCarousel() {
+        carouselInterval = setInterval(nextSlide, 6000);
+      }
+
+      function resetCarousel() {
+        clearInterval(carouselInterval);
+        startCarousel();
+      }
+
+      for (var d = 0; d < dots.length; d++) {
+        dots[d].addEventListener('click', (function(idx) {
+          return function() {
+            goToSlide(idx);
+            resetCarousel();
+          };
+        })(d));
+      }
+
+      startCarousel();
+
+      /* ========================================
+         INTERSECTION OBSERVER — FADE IN
+         ======================================== */
+      var observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -60px 0px',
+        threshold: 0.1
+      };
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      var animElements = document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right');
+      for (var a = 0; a < animElements.length; a++) {
+        observer.observe(animElements[a]);
+      }
+
+      /* ========================================
+         CONTACT AUDIENCE BUTTONS
+         ======================================== */
+      var audienceBtns = document.querySelectorAll('.contact-audience-btn');
+      for (var b = 0; b < audienceBtns.length; b++) {
+        audienceBtns[b].addEventListener('click', function() {
+          for (var c = 0; c < audienceBtns.length; c++) {
+            audienceBtns[c].classList.remove('active');
+          }
+          this.classList.add('active');
+        });
+      }
+
+      /* ========================================
+         FORM SUBMISSION
+         ======================================== */
+      var contactForm = document.getElementById('contactForm');
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = contactForm.querySelector('button[type="submit"]');
+        var originalHTML = btn.innerHTML;
+
+        btn.innerHTML = 'Submitting...';
+        btn.disabled = true;
+
+        setTimeout(function() {
+          btn.innerHTML = 'Inquiry Submitted Successfully';
+          btn.style.background = '#024653';
+
+          setTimeout(function() {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+            btn.style.background = '';
+            contactForm.reset();
+            for (var c = 0; c < audienceBtns.length; c++) {
+              audienceBtns[c].classList.remove('active');
+            }
+            audienceBtns[0].classList.add('active');
+          }, 3000);
+        }, 1500);
+      });
+
+      /* ========================================
+         SMOOTH SCROLL FOR ANCHOR LINKS
+         ======================================== */
+      var anchors = document.querySelectorAll('a[href^="#"]');
+      for (var s = 0; s < anchors.length; s++) {
+        anchors[s].addEventListener('click', function(e) {
+          var href = this.getAttribute('href');
+          if (href === '#') return;
+          var target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            var offset = navbar.offsetHeight;
+            var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }
+        });
+      }
+
+    })();
+  </script>
+
+</body>
+</html>

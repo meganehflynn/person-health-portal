@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Person Health — Site Concepts Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0c0c10;
+  --surface: #16161c;
+  --surface-hover: #1e1e26;
+  --border: #2a2a35;
+  --text: #e8e8ec;
+  --text-muted: #8b8b9e;
+  --accent-a: #05D16E;
+  --accent-b: #195BFE;
+  --accent-c: #6237A0;
+  --radius: 12px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== NAV ===== */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(12,12,16,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.nav-brand span { color: var(--text-muted); font-weight: 500; }
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 140px 40px 80px;
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.hero-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* ===== SECTION ===== */
+.section {
+  padding: 60px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 40px;
+}
+
+.section-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.section-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ===== SITE CARDS ===== */
+.site-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.site-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.site-card:hover {
+  border-color: #444;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.site-card-preview {
+  position: relative;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background: #111;
+}
+
+.site-card-preview iframe {
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  border: none;
+  pointer-events: none;
+}
+
+.site-card-preview .preview-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.site-card-body {
+  padding: 24px;
+}
+
+.site-card-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.site-card[data-site="a"] .site-card-badge { background: rgba(5,209,110,0.15); color: var(--accent-a); }
+.site-card[data-site="b"] .site-card-badge { background: rgba(25,91,254,0.15); color: var(--accent-b); }
+.site-card[data-site="c"] .site-card-badge { background: rgba(98,55,160,0.15); color: var(--accent-c); }
+
+.site-card-body h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.site-card-body p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.site-card-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-card-meta span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.site-card-meta span svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+}
+
+.site-card-actions {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+}
+
+.btn-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view svg { width: 16px; height: 16px; }
+
+.btn-view-primary {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.btn-view-primary:hover { opacity: 0.9; }
+
+.btn-view-secondary {
+  background: var(--surface-hover);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-view-secondary:hover { border-color: #555; }
+
+/* ===== DOCS GRID ===== */
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.doc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.doc-card:hover {
+  border-color: #444;
+  background: var(--surface-hover);
+}
+
+.doc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.doc-icon-pdf { background: rgba(239,68,68,0.15); color: #ef4444; }
+.doc-icon-pptx { background: rgba(249,115,22,0.15); color: #f97316; }
+.doc-icon-md { background: rgba(59,130,246,0.15); color: #3b82f6; }
+
+.doc-info h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.doc-info p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ===== DISCOVERY ARTIFACTS ===== */
+.artifacts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.artifact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.artifact-card:hover {
+  border-color: #444;
+  background: var(--surface-hover);
+}
+
+.artifact-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(59,130,246,0.12);
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.artifact-card h4 {
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.artifact-card p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ===== LOGO GALLERY ===== */
+.logo-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.logo-set {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.logo-set-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.logo-set-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.logo-set-header h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.logo-variants {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo-variant {
+  padding: 16px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-variant img {
+  max-height: 40px;
+  max-width: 160px;
+  object-fit: contain;
+}
+
+.logo-variant-light { background: #f0f0f0; }
+.logo-variant-dark { background: #1a1a24; }
+
+/* ===== MD VIEWER MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.modal-header h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.modal-body {
+  padding: 28px 32px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Markdown rendered styles */
+.md-content h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; margin: 0 0 16px; letter-spacing: -0.02em; }
+.md-content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 600; margin: 28px 0 12px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.md-content h3 { font-size: 1.05rem; font-weight: 600; margin: 22px 0 8px; }
+.md-content p { margin: 0 0 12px; color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+.md-content ul, .md-content ol { margin: 0 0 16px; padding-left: 24px; }
+.md-content li { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px; line-height: 1.6; }
+.md-content strong { color: var(--text); font-weight: 600; }
+.md-content code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.84rem; color: #a5b4fc; }
+.md-content pre { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; margin: 0 0 16px; }
+.md-content pre code { background: none; padding: 0; font-size: 0.82rem; color: var(--text-muted); }
+.md-content hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.md-content blockquote { border-left: 3px solid var(--border); padding-left: 16px; margin: 0 0 16px; color: var(--text-muted); font-style: italic; }
+.md-content table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 0.85rem; }
+.md-content th, .md-content td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+.md-content th { background: rgba(255,255,255,0.04); font-weight: 600; color: var(--text); }
+.md-content td { color: var(--text-muted); }
+
+/* ===== FULLSCREEN SITE VIEWER ===== */
+.site-viewer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: var(--bg);
+  flex-direction: column;
+}
+
+.site-viewer-overlay.active {
+  display: flex;
+}
+
+.site-viewer-bar {
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+.site-viewer-bar h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.site-viewer-bar button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.site-viewer-bar button:hover { background: var(--surface-hover); }
+
+.site-viewer-frame {
+  flex: 1;
+}
+
+.site-viewer-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 40px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+.footer p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .site-cards { grid-template-columns: 1fr; }
+  .logo-row { flex-direction: column; }
+}
+
+@media (max-width: 768px) {
+  .top-nav { padding: 0 20px; }
+  .hero { padding: 120px 20px 60px; }
+  .section { padding: 40px 20px; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="top-nav">
+  <div class="nav-brand">Person Health <span>/ Site Concepts</span></div>
+  <ul class="nav-links">
+    <li><a href="#sites">Site Concepts</a></li>
+    <li><a href="#discovery">Discovery</a></li>
+    <li><a href="#logos">Logo System</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <p class="hero-label">Prepared for Person Health</p>
+  <h1>Microsite Concept Presentation</h1>
+  <p>Three distinct brand directions for Person Health's investor and partner microsite, each built from Tandem Theory's logo concepts. Scroll to explore each direction and supporting materials.</p>
+</section>
+
+<!-- Site Concepts -->
+<section class="section" id="sites">
+  <div class="section-header">
+    <h2>Site Concepts</h2>
+    <p>Click to preview each direction in full, or open in a new tab for the complete experience.</p>
+  </div>
+
+  <div class="site-cards">
+    <!-- Site A -->
+    <div class="site-card" data-site="a">
+      <div class="site-card-preview">
+        <iframe src="site-a-green-v3/index.html" loading="lazy" tabindex="-1"></iframe>
+        <div class="preview-overlay" onclick="openSiteViewer('site-a-green-v3/index.html', 'Site A — Attune')"></div>
+      </div>
+      <div class="site-card-body">
+        <span class="site-card-badge">Concept A</span>
+        <h3>Attune</h3>
+        <p>Deep teal and vibrant green. Conveys clinical precision and trust through structured layouts, a modalities hub with animated integration spokes, and a warm, grounded tone.</p>
+        <div class="site-card-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Space Grotesk / Inter</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg> Structured Grid</span>
+        </div>
+      </div>
+      <div class="site-card-actions">
+        <a class="btn-view btn-view-primary" onclick="openSiteViewer('site-a-green-v3/index.html', 'Site A — Attune')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Preview
+        </a>
+        <a class="btn-view btn-view-secondary" href="site-a-green-v3/index.html" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          New Tab
+        </a>
+      </div>
+    </div>
+
+    <!-- Site B -->
+    <div class="site-card" data-site="b">
+      <div class="site-card-preview">
+        <iframe src="site-b-blue-v3/index.html" loading="lazy" tabindex="-1"></iframe>
+        <div class="preview-overlay" onclick="openSiteViewer('site-b-blue-v3/index.html', 'Site B — Ignition')"></div>
+      </div>
+      <div class="site-card-body">
+        <span class="site-card-badge">Concept B</span>
+        <h3>Ignition</h3>
+        <p>Bold blue with dark navy. Projects technological confidence and momentum through glass-card UI, a particle-connected modalities network, and an energetic, forward-leaning voice.</p>
+        <div class="site-card-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Outfit / Manrope</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg> Glass UI / Cards</span>
+        </div>
+      </div>
+      <div class="site-card-actions">
+        <a class="btn-view btn-view-primary" onclick="openSiteViewer('site-b-blue-v3/index.html', 'Site B — Ignition')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Preview
+        </a>
+        <a class="btn-view btn-view-secondary" href="site-b-blue-v3/index.html" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          New Tab
+        </a>
+      </div>
+    </div>
+
+    <!-- Site C -->
+    <div class="site-card" data-site="c">
+      <div class="site-card-preview">
+        <iframe src="site-c-purple-v3/index.html" loading="lazy" tabindex="-1"></iframe>
+        <div class="preview-overlay" onclick="openSiteViewer('site-c-purple-v3/index.html', 'Site C — Ultraviolet')"></div>
+      </div>
+      <div class="site-card-body">
+        <span class="site-card-badge">Concept C</span>
+        <h3>Ultraviolet</h3>
+        <p>Rich purple with deep elderberry. Evokes innovation and sophistication through a masonry advantage grid, geometric patterns, and a bold, visionary narrative tone.</p>
+        <div class="site-card-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Sora / DM Sans</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg> Masonry Grid</span>
+        </div>
+      </div>
+      <div class="site-card-actions">
+        <a class="btn-view btn-view-primary" onclick="openSiteViewer('site-c-purple-v3/index.html', 'Site C — Ultraviolet')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Preview
+        </a>
+        <a class="btn-view btn-view-secondary" href="site-c-purple-v3/index.html" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          New Tab
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Discovery Artifacts -->
+<section class="section" id="discovery">
+  <div class="section-header">
+    <h2>Discovery Artifacts</h2>
+    <p>Research and strategy documents produced during the discovery phase. Click to view.</p>
+  </div>
+
+  <div class="artifacts-grid">
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/01-tech-stack-spider.md', 'Tech Stack Spider')">
+      <div class="artifact-number">01</div>
+      <div>
+        <h4>Tech Stack Spider</h4>
+        <p>Technology assessment</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/02-workflow-project-manager.md', 'Workflow & Project Manager')">
+      <div class="artifact-number">02</div>
+      <div>
+        <h4>Workflow & Project Manager</h4>
+        <p>Process and workflow design</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/03-ux-architect.md', 'UX Architect')">
+      <div class="artifact-number">03</div>
+      <div>
+        <h4>UX Architect</h4>
+        <p>User experience strategy</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/04-brand-guardian.md', 'Brand Guardian')">
+      <div class="artifact-number">04</div>
+      <div>
+        <h4>Brand Guardian</h4>
+        <p>Brand guidelines and design foundation</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/05-content-strategy.md', 'Content Strategy')">
+      <div class="artifact-number">05</div>
+      <div>
+        <h4>Content Strategy</h4>
+        <p>Messaging and content planning</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/06-seo-technical.md', 'SEO & Technical')">
+      <div class="artifact-number">06</div>
+      <div>
+        <h4>SEO & Technical</h4>
+        <p>Search optimization strategy</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/07-ui-design-system.md', 'UI Design System')">
+      <div class="artifact-number">07</div>
+      <div>
+        <h4>UI Design System</h4>
+        <p>Component library and patterns</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/08-frontend-architecture.md', 'Frontend Architecture')">
+      <div class="artifact-number">08</div>
+      <div>
+        <h4>Frontend Architecture</h4>
+        <p>Code architecture and structure</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/09-conversion-optimization.md', 'Conversion Optimization')">
+      <div class="artifact-number">09</div>
+      <div>
+        <h4>Conversion Optimization</h4>
+        <p>CRO strategy and tactics</p>
+      </div>
+    </div>
+    <div class="artifact-card" onclick="openMd('discovery-artifacts/10-interaction-widgets.md', 'Interaction Widgets')">
+      <div class="artifact-number">10</div>
+      <div>
+        <h4>Interaction Widgets</h4>
+        <p>Interactive component specifications</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logo System -->
+<section class="section" id="logos">
+  <div class="section-header">
+    <h2>Logo System</h2>
+    <p>Full logo and brandmark variants across all three directions.</p>
+  </div>
+
+  <div class="logo-row">
+    <div class="logo-set">
+      <div class="logo-set-header">
+        <div class="logo-set-dot" style="background: var(--accent-a);"></div>
+        <h4>Concept A — Attune</h4>
+      </div>
+      <div class="logo-variants">
+        <div class="logo-variant logo-variant-light"><img src="logos/logo-a-green-nav.png" alt="Logo A color"></div>
+        <div class="logo-variant logo-variant-dark"><img src="logos/logo-a-green-white-nav.png" alt="Logo A white"></div>
+        <div class="logo-variant logo-variant-light"><img src="logos/brandmark-a-dark-nav.png" alt="Brandmark A" style="max-height:36px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="logo-row">
+    <div class="logo-set">
+      <div class="logo-set-header">
+        <div class="logo-set-dot" style="background: var(--accent-b);"></div>
+        <h4>Concept B — Ignition</h4>
+      </div>
+      <div class="logo-variants">
+        <div class="logo-variant logo-variant-light"><img src="logos/logo-b-blue-nav.png" alt="Logo B color"></div>
+        <div class="logo-variant logo-variant-dark"><img src="logos/logo-b-blue-white-nav.png" alt="Logo B white"></div>
+        <div class="logo-variant logo-variant-light"><img src="logos/brandmark-b-blue-nav.png" alt="Brandmark B" style="max-height:36px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="logo-row">
+    <div class="logo-set">
+      <div class="logo-set-header">
+        <div class="logo-set-dot" style="background: var(--accent-c);"></div>
+        <h4>Concept C — Ultraviolet</h4>
+      </div>
+      <div class="logo-variants">
+        <div class="logo-variant logo-variant-light"><img src="logos/logo-c-purple-nav.png" alt="Logo C color"></div>
+        <div class="logo-variant logo-variant-dark"><img src="logos/logo-c-purple-white-nav.png" alt="Logo C white"></div>
+        <div class="logo-variant logo-variant-light"><img src="logos/brandmark-c-purple-nav.png" alt="Brandmark C" style="max-height:36px;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>Person Health Microsite Concepts — Prepared March 2026</p>
+</footer>
+
+<!-- Fullscreen Site Viewer -->
+<div class="site-viewer-overlay" id="siteViewer">
+  <div class="site-viewer-bar">
+    <h4 id="siteViewerTitle"></h4>
+    <div style="display:flex; gap:8px;">
+      <button onclick="window.open(document.getElementById('siteViewerFrame').src, '_blank')">Open in New Tab</button>
+      <button onclick="closeSiteViewer()">Close</button>
+    </div>
+  </div>
+  <div class="site-viewer-frame">
+    <iframe id="siteViewerFrame"></iframe>
+  </div>
+</div>
+
+<!-- MD Viewer Modal -->
+<div class="modal-overlay" id="mdModal" onclick="if(event.target===this)closeMd()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="mdModalTitle"></h3>
+      <button class="modal-close" onclick="closeMd()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="md-content" id="mdContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Fullscreen site viewer
+function openSiteViewer(url, title) {
+  document.getElementById('siteViewerTitle').textContent = title;
+  document.getElementById('siteViewerFrame').src = url;
+  document.getElementById('siteViewer').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSiteViewer() {
+  document.getElementById('siteViewer').classList.remove('active');
+  document.getElementById('siteViewerFrame').src = '';
+  document.body.style.overflow = '';
+}
+
+// Markdown viewer
+async function openMd(path, title) {
+  document.getElementById('mdModalTitle').textContent = title;
+  document.getElementById('mdModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  try {
+    const res = await fetch(path);
+    const text = await res.text();
+    document.getElementById('mdContent').innerHTML = renderMarkdown(text);
+  } catch (e) {
+    document.getElementById('mdContent').innerHTML = '<p>Unable to load file.</p>';
+  }
+}
+
+function closeMd() {
+  document.getElementById('mdModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Simple markdown renderer
+function renderMarkdown(md) {
+  let html = md;
+
+  // Code blocks (``` ... ```)
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre><code>${escHtml(code.trim())}</code></pre>`
+  );
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Headings
+  html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Horizontal rules
+  html = html.replace(/^---+$/gm, '<hr>');
+
+  // Bold and italic
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Tables
+  html = html.replace(/^(\|.+\|)\n(\|[-\s|:]+\|)\n((?:\|.+\|\n?)*)/gm, (_, header, sep, body) => {
+    const headers = header.split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+    const rows = body.trim().split('\n').map(row => {
+      const cells = row.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
+      return `<tr>${cells}</tr>`;
+    }).join('');
+    return `<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>`;
+  });
+
+  // Unordered lists
+  html = html.replace(/^(\s*)-\s+(.+)$/gm, (_, indent, item) => {
+    return `<li>${item}</li>`;
+  });
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+  // Blockquotes
+  html = html.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // Paragraphs — wrap remaining loose lines
+  html = html.replace(/^(?!<[a-z])((?!<\/)[^\n]+)$/gm, '<p>$1</p>');
+
+  // Clean up double-wrapped
+  html = html.replace(/<p><(h[1-4]|ul|ol|pre|blockquote|table|hr)/g, '<$1');
+  html = html.replace(/<\/(h[1-4]|ul|ol|pre|blockquote|table)><\/p>/g, '</$1>');
+
+  return html;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSiteViewer();
+    closeMd();
+  }
+});
+</script>
+</body>
+</html>
