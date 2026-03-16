@@ -440,74 +440,62 @@
       margin-bottom: 40px;
     }
 
-    .advantages-strip {
-      display: flex;
-      gap: 32px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 12px;
+    .adv-masonry {
+      max-width: 1000px;
+      margin: 0 auto;
+      columns: 2;
+      column-gap: 32px;
     }
 
-    .advantages-strip::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .advantages-strip::-webkit-scrollbar-track {
-      background: rgba(0,0,0,0.05);
-      border-radius: 4px;
-    }
-
-    .advantages-strip::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 4px;
-    }
-
-    .adv-card {
-      flex: 0 0 250px;
+    .adv-masonry-card {
+      break-inside: avoid;
+      -webkit-column-break-inside: avoid;
       background: var(--white);
-      border-radius: var(--radius-md);
-      padding: 32px 26px;
-      border-left: 4px solid var(--accent);
-      box-shadow: var(--shadow-sm);
-      scroll-snap-align: start;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      margin-bottom: 32px;
+      overflow: hidden;
       transition: transform 0.3s, box-shadow 0.3s;
     }
 
-    .adv-card:hover {
+    .adv-masonry-card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-lg);
     }
 
-    .adv-icon {
-      width: 64px;
-      height: 64px;
-      background: var(--light-tint);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      color: var(--accent);
+    .adv-masonry-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
     }
 
-    .adv-icon svg {
-      width: 40px;
-      height: 40px;
+    .adv-masonry-card--tall img {
+      height: 280px;
     }
 
-    .adv-card h4 {
+    .adv-masonry-body {
+      padding: 32px;
+    }
+
+    .adv-masonry-body h4 {
       font-family: var(--font-heading);
       font-weight: 700;
       font-size: 1.3rem;
       color: var(--primary);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .adv-card p {
+    .adv-masonry-body p {
       font-size: 1.05rem;
       color: var(--text-mid);
-      line-height: 1.6;
+      line-height: 1.7;
+    }
+
+    .adv-masonry-card--span {
+      column-span: all;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* ========================================
@@ -562,11 +550,11 @@
     }
 
     .platform-card-logo {
-      height: 40px;
+      height: 44px;
       margin-bottom: 20px;
       display: flex;
       align-items: center;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .platform-card-logo img {
@@ -1037,91 +1025,99 @@
       margin: 0 auto;
     }
 
-    .audience-grid {
+    .audience-layout {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
+      grid-template-columns: 240px 1fr;
+      gap: 48px;
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
-    .audience-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 40px 32px;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      display: flex;
-      flex-direction: column;
+    .audience-nav {
+      position: sticky;
+      top: 120px;
+      align-self: start;
     }
 
-    .audience-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--accent);
-    }
-
-    .audience-card-icon {
-      width: 56px;
-      height: 56px;
-      background: var(--light-tint);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      color: var(--accent);
-    }
-
-    .audience-card-icon svg {
-      width: 32px;
-      height: 32px;
-    }
-
-    .audience-card h3 {
+    .audience-nav-item {
+      display: block;
+      padding: 16px 20px;
+      margin-bottom: 8px;
+      border-left: 3px solid transparent;
+      cursor: pointer;
       font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: var(--primary);
-      margin-bottom: 12px;
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--text-mid);
+      transition: all 0.3s;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      user-select: none;
     }
 
-    .audience-card p {
+    .audience-nav-item:hover {
+      color: var(--primary);
+      background: var(--light-tint);
+    }
+
+    .audience-nav-item.active {
+      border-left-color: var(--accent);
+      color: var(--primary);
+      background: var(--light-tint);
+      font-weight: 600;
+    }
+
+    .audience-content-panel {
+      display: none;
+      animation: panelFadeA 0.35s ease;
+    }
+
+    .audience-content-panel.active {
+      display: block;
+    }
+
+    @keyframes panelFadeA {
+      from { opacity: 0; transform: translateX(12px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .audience-content-panel h3 {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .audience-content-panel p {
       font-size: 1.05rem;
       color: var(--text-mid);
-      line-height: 1.7;
-      margin-bottom: 12px;
+      line-height: 1.8;
+      margin-bottom: 16px;
     }
 
-    .audience-card ul {
+    .audience-content-panel ul {
       list-style: none;
       margin-bottom: 24px;
     }
 
-    .audience-card ul li {
+    .audience-content-panel li {
+      padding: 8px 0;
+      padding-left: 22px;
       position: relative;
-      padding-left: 20px;
       font-size: 1.05rem;
       color: var(--text-mid);
-      margin-bottom: 8px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    .audience-card ul li::before {
+    .audience-content-panel li::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 8px;
+      top: 16px;
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: var(--accent);
-    }
-
-    .audience-card .btn-primary {
-      margin-top: auto;
-      align-self: flex-start;
-      padding: 14px 28px;
-      font-size: 1rem;
     }
 
     /* ========================================
@@ -1595,8 +1591,25 @@
         grid-template-columns: repeat(3, 1fr);
       }
 
-      .audience-grid {
+      .audience-layout {
         grid-template-columns: 1fr;
+      }
+      .audience-nav {
+        position: static;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        margin-bottom: 24px;
+      }
+      .audience-nav-item {
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+        white-space: nowrap;
+      }
+      .audience-nav-item.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--accent);
       }
 
       .about-highlights {
@@ -1676,8 +1689,8 @@
         font-size: clamp(2.2rem, 7vw, 3.5rem);
       }
 
-      .adv-card {
-        flex: 0 0 260px;
+      .adv-masonry {
+        columns: 1;
       }
 
       .platform-card {
@@ -1717,8 +1730,25 @@
         padding: 24px;
       }
 
-      .audience-grid {
+      .audience-layout {
         grid-template-columns: 1fr;
+      }
+      .audience-nav {
+        position: static;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        margin-bottom: 24px;
+      }
+      .audience-nav-item {
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+        white-space: nowrap;
+      }
+      .audience-nav-item.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--accent);
       }
 
       .leadership-grid {
@@ -1849,10 +1879,64 @@
       </div>
     </div>
 
+    <div class="hero-slide" data-slide="3">
+      <img src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=1920&q=80" alt="Doctor with patient" loading="lazy">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Population Health Intelligence
+        </div>
+        <h1 class="hero-title">From Individual Insight to Population Impact.</h1>
+        <p class="hero-subtitle">Every screening strengthens our AI. Every data point deepens our understanding. Together, we are building the world's most comprehensive early detection platform.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Request Partnership Discussion <span>&rarr;</span></a>
+          <a href="#competitive" class="btn-outline-light">See Our Advantage</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-slide" data-slide="4">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1920&q=80" alt="Healthcare professional" loading="lazy">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Non-Invasive Screening
+        </div>
+        <h1 class="hero-title">A Simple Breath. A Powerful Answer.</h1>
+        <p class="hero-subtitle">No needles. No waiting. In under one minute, our breath diagnostics deliver clinically validated screening results at the point of care.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Request Partnership Discussion <span>&rarr;</span></a>
+          <a href="#platform" class="btn-outline-light">Learn How It Works</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-slide" data-slide="5">
+      <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1920&q=80" alt="Family in nature" loading="lazy">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Health Stewardship
+        </div>
+        <h1 class="hero-title">More Birthdays. More Moments. More Life.</h1>
+        <p class="hero-subtitle">Early detection isn't just about data — it's about giving families more time together. That's the future we're building.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Request Partnership Discussion <span>&rarr;</span></a>
+          <a href="#stories" class="btn-outline-light">Patient Stories</a>
+        </div>
+      </div>
+    </div>
+
     <div class="hero-dots">
       <button class="hero-dot active" data-dot="0" aria-label="Slide 1"></button>
       <button class="hero-dot" data-dot="1" aria-label="Slide 2"></button>
       <button class="hero-dot" data-dot="2" aria-label="Slide 3"></button>
+      <button class="hero-dot" data-dot="3" aria-label="Slide 4"></button>
+      <button class="hero-dot" data-dot="4" aria-label="Slide 5"></button>
+      <button class="hero-dot" data-dot="5" aria-label="Slide 6"></button>
     </div>
   </section>
 
@@ -1865,52 +1949,41 @@
         <span class="section-label">Key Advantages</span>
         <h2 class="section-title">Why Person Health</h2>
       </div>
-      <div class="advantages-strip">
-        <div class="adv-card fade-in">
-          <div class="adv-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-            </svg>
+      <div class="adv-masonry">
+        <div class="adv-masonry-card adv-masonry-card--tall fade-in">
+          <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80" alt="Multi-modal diagnostics">
+          <div class="adv-masonry-body">
+            <h4>Multi-Modal Diagnostics</h4>
+            <p>Combining breath biomarkers and blood molecular fingerprinting into a single unified platform. No other company integrates these modalities with longitudinal AI analysis at this scale.</p>
           </div>
-          <h4>Multi-Modal</h4>
-          <p>Multi-modal diagnostics: breath, blood, genomics, and AI working together for comprehensive insight.</p>
         </div>
-        <div class="adv-card fade-in">
-          <div class="adv-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+        <div class="adv-masonry-card fade-in">
+          <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80" alt="Clinical validation" style="height:180px;">
+          <div class="adv-masonry-body">
+            <h4>Clinical Validation</h4>
+            <p>Partnerships with the world's leading academic medical centers and research institutions. Active VERITY Study. Real clinical evidence backing every claim.</p>
           </div>
-          <h4>Validation</h4>
-          <p>Clinically validated with leading academic medical centers including Mayo Clinic and Cleveland Clinic.</p>
         </div>
-        <div class="adv-card fade-in">
-          <div class="adv-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
+        <div class="adv-masonry-card fade-in">
+          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt="IP protection" style="height:180px;">
+          <div class="adv-masonry-body">
+            <h4>IP Protection</h4>
+            <p>43+ patents filed across breath diagnostics, molecular analysis, and AI/ML algorithms. A defensible moat that deepens with every data point collected.</p>
           </div>
-          <h4>IP Protection</h4>
-          <p>Dozens of patents across sensors, chemistry, and AI methods protecting our innovations.</p>
         </div>
-        <div class="adv-card fade-in">
-          <div class="adv-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
-              <line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/>
-            </svg>
+        <div class="adv-masonry-card adv-masonry-card--tall fade-in">
+          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80" alt="Lab infrastructure">
+          <div class="adv-masonry-body">
+            <h4>Lab Infrastructure</h4>
+            <p>Purpose-built CLIA labs with scalable capacity. End-to-end control from sample collection to AI-powered results. No dependency on third-party infrastructure.</p>
           </div>
-          <h4>Lab Infrastructure</h4>
-          <p>Built on CLIA-certified, CAP-accredited lab infrastructure ensuring regulatory compliance.</p>
         </div>
-        <div class="adv-card fade-in">
-          <div class="adv-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
-            </svg>
+        <div class="adv-masonry-card adv-masonry-card--span fade-in">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80" alt="AI data analytics" style="height:200px; object-fit:cover; width:100%;">
+          <div class="adv-masonry-body" style="text-align:center;">
+            <h4>Early Detection Engine</h4>
+            <p>Longitudinal data creates compounding intelligence. The more patients we see, the smarter the platform becomes. This is the flywheel that competitors cannot replicate.</p>
           </div>
-          <h4>Early Detection</h4>
-          <p>Designed to detect disease signals before symptoms appear, when treatment is most effective.</p>
         </div>
       </div>
     </div>
@@ -1945,7 +2018,7 @@
         </div>
         <div class="platform-card fade-in">
           <div class="platform-card-logo">
-            <img src="../logos/realbusiness-ai-logo.png" alt="RealBusiness.AI" style="height:40px; object-fit:contain;">
+            <img src="../logos/realbusiness-ai-logo.png" alt="RealBusiness.AI" style="height:36px; width:auto; object-fit:contain;">
           </div>
           <h3>RealBusiness.AI</h3>
           <p>Agentic AI platform providing a scalable operating system for large patient populations. HIPAA and GDPR compliant intelligence layer for clinical workflows.</p>
@@ -2099,14 +2172,14 @@
           <p>Across sensors, chemistry, AI methods, and diagnostic workflows</p>
         </div>
         <div class="comp-stat fade-in">
-          <div class="comp-stat-num">15%+</div>
-          <h4>Market CAGR</h4>
-          <p>Rapidly expanding diagnostic market with compounding data moat</p>
+          <div class="comp-stat-num">&lt;1 min</div>
+          <h4>Time to Results</h4>
+          <p>Non-invasive breath screening delivers actionable results in under one minute</p>
         </div>
         <div class="comp-stat fade-in">
-          <div class="comp-stat-num">$40-75B</div>
-          <h4>Addressable Market</h4>
-          <p>Total addressable market by 2030 across diagnostics and AI</p>
+          <div class="comp-stat-num">40+</div>
+          <h4>Clinical Sites</h4>
+          <p>Research and clinical partner locations across leading health systems</p>
         </div>
         <div class="comp-stat fade-in">
           <div class="comp-stat-num">4</div>
@@ -2174,72 +2247,58 @@
         <h2 class="section-title">Built for Every Stakeholder</h2>
         <p class="section-subtitle">Whether you are an investor, a health system, or a technology vendor, Person Health offers a clear path to partnership and impact.</p>
       </div>
-      <div class="audience-grid">
-        <!-- Investors -->
-        <div class="audience-card fade-in">
-          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80" alt="Business professionals reviewing strategy" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px;">
-          <div class="audience-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
-          </div>
-          <h3>For Investors</h3>
-          <p>Platform company unifying multiple diagnostic modalities under one Health OS. Strong IP portfolio, clinical validation, and a compounding data moat create durable competitive advantages.</p>
+    </div>
+    <div class="audience-layout container">
+      <nav class="audience-nav">
+        <div class="audience-nav-item active" data-target="investors" onclick="switchAudience(this)">For Investors</div>
+        <div class="audience-nav-item" data-target="hospitals" onclick="switchAudience(this)">For Hospitals</div>
+        <div class="audience-nav-item" data-target="vendors" onclick="switchAudience(this)">For Vendors</div>
+      </nav>
+      <div class="audience-panels">
+        <!-- Investors Panel -->
+        <div class="audience-content-panel active" id="panel-investors">
+          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80" alt="Investment strategy" style="width:100%; height:200px; object-fit:cover; border-radius:var(--radius-md); margin-bottom:24px;">
+          <h3>A Platform Investment, Not a Product Bet</h3>
+          <p>Person Health is building the operating system for early disease detection. Our multi-modal approach creates compounding value: every patient, every data point, every clinical partnership strengthens the platform's intelligence and defensibility.</p>
           <div style="background: var(--light-tint); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; border-left: 4px solid var(--accent);">
-            <p style="font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-bottom: 0; line-height: 1.8;">$40-75B addressable market by 2030 &nbsp;|&nbsp; 75%+ gross margins &nbsp;|&nbsp; 80%+ recurring revenue &nbsp;|&nbsp; 5:1+ LTV:CAC</p>
+            <p style="font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-bottom: 0; line-height: 1.8;">75%+ gross margins &nbsp;|&nbsp; 80%+ recurring revenue &nbsp;|&nbsp; 5:1+ LTV:CAC &nbsp;|&nbsp; 4 integrated modalities</p>
           </div>
           <ul>
-            <li>43+ patents across four modalities</li>
-            <li>$40-75B addressable market by 2030</li>
+            <li>43+ patents across four modalities — defensible, compounding IP moat</li>
             <li>Scalable platform designed for large patient populations</li>
             <li>Revenue-generating lab infrastructure</li>
-            <li>Elite clinical validation: Mayo Clinic, Cleveland Clinic, MD Anderson, Baylor</li>
+            <li>Multi-modal platform creates winner-take-most dynamics</li>
+            <li>Category-defining opportunity in a market where early detection saves lives and billions in downstream costs</li>
           </ul>
-          <a href="#contact" class="btn-primary" style="padding: 16px 36px; font-size: 16px; box-shadow: 0 6px 20px rgba(5,209,110,0.4); background: var(--primary);">Start a Conversation <span>&rarr;</span></a>
+          <a href="#contact" class="btn-primary" style="padding:16px 36px; font-size:16px;">Request Investor Deck <span>&rarr;</span></a>
         </div>
-        <!-- Hospitals -->
-        <div class="audience-card fade-in">
-          <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&q=80" alt="Modern hospital facility" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px;">
-          <div class="audience-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 21v-4h6v4"/><path d="M10 9h4"/><path d="M12 7v4"/>
-            </svg>
-          </div>
-          <h3>For Research Hospitals</h3>
-          <p>Be first with multi-modal AI diagnostics. Mayo Clinic, Cleveland Clinic, MD Anderson, and Baylor are already engaged. Join the leading edge of early detection research and help shape the future of patient care.</p>
-          <div style="background: var(--light-tint); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; border-left: 4px solid var(--accent);">
-            <p style="font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-bottom: 0; line-height: 1.8;">Non-invasive screening &nbsp;|&nbsp; Results in minutes &nbsp;|&nbsp; CLIA/CAP accredited &nbsp;|&nbsp; HIPAA compliant</p>
-          </div>
+        <!-- Hospitals Panel -->
+        <div class="audience-content-panel" id="panel-hospitals">
+          <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80" alt="Modern hospital" style="width:100%; height:200px; object-fit:cover; border-radius:var(--radius-md); margin-bottom:24px;">
+          <h3>Be First to Offer Next-Generation Screening</h3>
+          <p>The world's leading health systems are already engaged. Person Health integrates into existing clinical workflows with minimal disruption and maximum patient impact.</p>
           <ul>
-            <li>Patient acquisition and enrollment support</li>
-            <li>Billable service lines from day one</li>
-            <li>Real-world evidence generation</li>
-            <li>Co-publication opportunities</li>
-            <li>Dedicated clinical integration team</li>
+            <li>Results in under one minute for breath diagnostics</li>
+            <li>Non-invasive collection improves patient compliance</li>
+            <li>AI-powered risk stratification reduces unnecessary procedures</li>
+            <li>HIPAA-compliant integration with existing EHR systems</li>
+            <li>Dedicated clinical support and training</li>
           </ul>
-          <a href="#contact" class="btn-primary" style="padding: 16px 36px; font-size: 16px; box-shadow: 0 6px 20px rgba(5,209,110,0.4); background: var(--primary);">Start a Conversation <span>&rarr;</span></a>
+          <a href="#contact" class="btn-primary" style="padding:16px 36px; font-size:16px;">Request Clinical Partnership <span>&rarr;</span></a>
         </div>
-        <!-- Vendors -->
-        <div class="audience-card fade-in">
-          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80" alt="Business partnership handshake" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px;">
-          <div class="audience-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-            </svg>
-          </div>
-          <h3>For Vendors</h3>
-          <p>Power the future of early diagnostics. We partner with lab equipment, hardware, sensor, EHR, and AI companies to build the next generation of health infrastructure. Our platform creates a new ecosystem of diagnostic innovation.</p>
-          <div style="background: var(--light-tint); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; border-left: 4px solid var(--accent);">
-            <p style="font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-bottom: 0; line-height: 1.8;">Multi-year agreements &nbsp;|&nbsp; Revenue share model &nbsp;|&nbsp; IP licensing &nbsp;|&nbsp; Co-development</p>
-          </div>
+        <!-- Vendors Panel -->
+        <div class="audience-content-panel" id="panel-vendors">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80" alt="Technology partnership" style="width:100%; height:200px; object-fit:cover; border-radius:var(--radius-md); margin-bottom:24px;">
+          <h3>Power the Future of Diagnostics</h3>
+          <p>Person Health is building an ecosystem. We are seeking technology partners, lab equipment suppliers, and service providers who want to be part of the next generation of healthcare infrastructure.</p>
           <ul>
-            <li>Early market entry into multi-modal diagnostics</li>
-            <li>Long-term supply and integration agreements</li>
-            <li>Co-development of new capabilities</li>
-            <li>IP protection and licensing opportunities</li>
-            <li>Access to growing clinical partner network</li>
+            <li>Lab equipment and reagent suppliers</li>
+            <li>AI/ML technology partners</li>
+            <li>Clinical trial management organizations</li>
+            <li>Healthcare IT and EHR integration specialists</li>
+            <li>Early ecosystem access and co-development opportunities</li>
           </ul>
-          <a href="#contact" class="btn-primary" style="padding: 16px 36px; font-size: 16px; box-shadow: 0 6px 20px rgba(5,209,110,0.4); background: var(--primary);">Start a Conversation <span>&rarr;</span></a>
+          <a href="#contact" class="btn-primary" style="padding:16px 36px; font-size:16px;">Explore Vendor Partnership <span>&rarr;</span></a>
         </div>
       </div>
     </div>
@@ -2275,20 +2334,11 @@
         <div class="about-text fade-in-right">
           <p><strong>Origins:</strong> Person Health was born from a University of Minnesota spinout (VocxiHealth), combined with molecular fingerprinting innovation (Oncodea) and a reference laboratory platform (MTL/CareNexa).</p>
           <p><strong>Mission:</strong> We believe every person deserves access to early detection — regardless of where they live or what they can afford. That belief drives everything we build.</p>
-          <p><strong>Leadership:</strong> Our scientific founders hold 80+ patents across chemistry, sensors, and machine learning. Our executive team brings decades of experience from Boston Scientific and leading health technology companies.</p>
+          <p><strong>Leadership:</strong> Our scientific founders hold 80+ patents across chemistry, sensors, and machine learning. Our executive team brings decades of experience from leading medical device and health technology companies.</p>
         </div>
       </div>
 
-      <!-- Clinical Partners — full width -->
-      <div class="about-partners-section fade-in">
-        <h4>Clinical Partners</h4>
-        <div class="about-partners">
-          <span class="about-partner-tag"><img src="https://college.mayo.edu/media/mccms/site-assets/faviconsx2flogo/MCCMS_Logo_Black_New.svg" alt="Mayo Clinic"></span>
-          <span class="about-partner-tag"><img src="https://my.clevelandclinic.org/-/scassets/images/org/logo/logo-ccf.svg" alt="Cleveland Clinic"></span>
-          <span class="about-partner-tag"><img src="https://www.mdanderson.org/etc.clientlibs/mda/clientlibs/mda-web/clientlib-site/resources/images/xmda-logo.png.pagespeed.ic.N11qaULSMU.png" alt="MD Anderson Cancer Center"></span>
-          <span class="about-partner-tag"><img src="https://www.baylor.edu/themes/custom/baylor_united_2/logo.svg" alt="Baylor University"></span>
-        </div>
-      </div>
+      <!-- Clinical Partners — removed per client request -->
     </div>
   </section>
 
@@ -2309,7 +2359,7 @@
           <div class="leader-card-body">
             <h4>Executive Leadership</h4>
             <span class="leader-role">Chief Executive Officer</span>
-            <p>Former medtech executive with 20+ years building diagnostic platforms. Boston Scientific lineage.</p>
+            <p>Former medtech executive with 20+ years building diagnostic platforms at leading medical device companies.</p>
           </div>
         </div>
         <div class="leader-card fade-in">
@@ -2347,28 +2397,28 @@
             <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
           </div>
           <h4>[Advisor Name]</h4>
-          <p>Oncology, Mayo Clinic</p>
+          <p>Oncology, Leading Academic Medical Center</p>
         </div>
         <div class="advisory-badge">
           <div class="advisory-badge-icon" style="width: 64px; height: 64px; border-radius: 50%; background: var(--light-tint); overflow: hidden;">
             <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
           </div>
           <h4>[Advisor Name]</h4>
-          <p>Cardiology, Cleveland Clinic</p>
+          <p>Cardiology, Leading Research Hospital</p>
         </div>
         <div class="advisory-badge">
           <div class="advisory-badge-icon" style="width: 64px; height: 64px; border-radius: 50%; background: var(--light-tint); overflow: hidden;">
             <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
           </div>
           <h4>[Advisor Name]</h4>
-          <p>Cancer Biology, MD Anderson</p>
+          <p>Cancer Biology, Leading Cancer Center</p>
         </div>
         <div class="advisory-badge">
           <div class="advisory-badge-icon" style="width: 64px; height: 64px; border-radius: 50%; background: var(--light-tint); overflow: hidden;">
             <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&q=80" alt="Advisor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
           </div>
           <h4>[Advisor Name]</h4>
-          <p>Molecular Diagnostics, Baylor</p>
+          <p>Molecular Diagnostics, Leading University</p>
         </div>
       </div>
     </div>
@@ -2485,6 +2535,13 @@
        JAVASCRIPT
        ====================================== -->
   <script>
+    function switchAudience(el) {
+      document.querySelectorAll('.audience-nav-item').forEach(function(n) { n.classList.remove('active'); });
+      document.querySelectorAll('.audience-content-panel').forEach(function(p) { p.classList.remove('active'); });
+      el.classList.add('active');
+      document.getElementById('panel-' + el.getAttribute('data-target')).classList.add('active');
+    }
+
     (function() {
       'use strict';
 
