@@ -230,16 +230,10 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      background: transparent;
-      transition: background 0.3s, box-shadow 0.3s;
-      height: 72px;
-    }
-
-    .navbar.scrolled {
-      background: rgba(255,255,255,0.97);
+      background: var(--white);
       box-shadow: 0 2px 20px rgba(40,16,78,0.08);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      transition: box-shadow 0.3s;
+      height: 72px;
     }
 
     .navbar .container {
@@ -260,18 +254,10 @@
     }
 
     .nav-logo-white {
-      display: block;
+      display: none;
     }
 
     .nav-logo-color {
-      display: none;
-    }
-
-    .navbar.scrolled .nav-logo-white {
-      display: none;
-    }
-
-    .navbar.scrolled .nav-logo-color {
       display: block;
     }
 
@@ -286,20 +272,12 @@
       font-family: var(--font-body);
       font-size: 1rem;
       font-weight: 500;
-      color: rgba(255,255,255,0.85);
+      color: var(--text-mid);
       transition: color 0.3s;
       letter-spacing: 0.2px;
     }
 
-    .navbar.scrolled .nav-links a {
-      color: var(--text-mid);
-    }
-
     .nav-links a:hover {
-      color: var(--white);
-    }
-
-    .navbar.scrolled .nav-links a:hover {
       color: var(--primary);
     }
 
@@ -329,12 +307,8 @@
       display: block;
       width: 24px;
       height: 2px;
-      background: var(--white);
-      transition: all 0.3s;
-    }
-
-    .navbar.scrolled .mobile-toggle span {
       background: var(--text-dark);
+      transition: all 0.3s;
     }
 
     /* ========================================
@@ -369,7 +343,7 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(40,16,78,0.88) 0%, rgba(40,16,78,0.65) 50%, rgba(40,16,78,0.5) 100%);
+      background: linear-gradient(135deg, rgba(2,70,83,0.85) 0%, rgba(2,70,83,0.6) 50%, rgba(2,70,83,0.45) 100%);
     }
 
     .hero-content {
@@ -1884,7 +1858,7 @@
     </div>
 
     <div class="hero-slide" data-slide="1">
-      <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=1920&q=80" alt="Golden hour nature" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1547347298-4f21aa2d68f2?w=1920&q=80" alt="Three children running and playing outdoors" loading="lazy">
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <div class="hero-badge">
@@ -1918,7 +1892,7 @@
     </div>
 
     <div class="hero-slide" data-slide="3">
-      <img src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=1920&q=80" alt="Doctor with patient" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1579165466741-7f35e4755660?w=1920&q=80" alt="Laboratory pipette and well plate" loading="lazy">
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <div class="hero-badge">
@@ -1935,7 +1909,7 @@
     </div>
 
     <div class="hero-slide" data-slide="4">
-      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1920&q=80" alt="Healthcare professional" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1560090995-01b72bdc2a3f?w=1920&q=80" alt="Older person swimming in pool" loading="lazy">
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <div class="hero-badge">
@@ -1952,7 +1926,7 @@
     </div>
 
     <div class="hero-slide" data-slide="5">
-      <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1920&q=80" alt="Family in nature" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=1920&q=80" alt="Multigenerational family blowing out birthday candles" loading="lazy">
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <div class="hero-badge">
@@ -1988,6 +1962,7 @@
         <h2 class="section-title">Why Person Health</h2>
       </div>
       <div class="adv-masonry">
+        <!-- Col 1: Multi-Modal (tall) then Clinical Validation -->
         <div class="adv-masonry-card adv-masonry-card--tall fade-in">
           <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80" alt="Multi-modal diagnostics">
           <div class="adv-masonry-body">
@@ -1995,20 +1970,23 @@
             <p>Combining breath biomarkers and blood molecular fingerprinting into a single unified platform. No other company integrates these modalities with longitudinal AI analysis at this scale.</p>
           </div>
         </div>
+        <!-- Col 2: IP Protection then Lab Infrastructure (tall) -->
         <div class="adv-masonry-card fade-in">
-          <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80" alt="Clinical validation" style="height:180px;">
-          <div class="adv-masonry-body">
-            <h4>Clinical Validation</h4>
-            <p>Partnerships with the world's leading academic medical centers and research institutions. Active VERITY Study. Real clinical evidence backing every claim.</p>
-          </div>
-        </div>
-        <div class="adv-masonry-card fade-in">
-          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt="IP protection" style="height:180px;">
+          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt="IP protection">
           <div class="adv-masonry-body">
             <h4>IP Protection</h4>
             <p>43+ patents filed across breath diagnostics, molecular analysis, and AI/ML algorithms. A defensible moat that deepens with every data point collected.</p>
           </div>
         </div>
+        <!-- Back to Col 1 -->
+        <div class="adv-masonry-card fade-in">
+          <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80" alt="Clinical validation">
+          <div class="adv-masonry-body">
+            <h4>Clinical Validation</h4>
+            <p>Partnerships with the world's leading academic medical centers and research institutions. Active VERITY Study. Real clinical evidence backing every claim.</p>
+          </div>
+        </div>
+        <!-- Back to Col 2 -->
         <div class="adv-masonry-card adv-masonry-card--tall fade-in">
           <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80" alt="Lab infrastructure">
           <div class="adv-masonry-body">
@@ -2016,6 +1994,7 @@
             <p>Purpose-built CLIA labs with scalable capacity. End-to-end control from sample collection to AI-powered results. No dependency on third-party infrastructure.</p>
           </div>
         </div>
+        <!-- Spanning full width -->
         <div class="adv-masonry-card adv-masonry-card--span fade-in">
           <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80" alt="AI data analytics" style="height:200px; object-fit:cover; width:100%;">
           <div class="adv-masonry-body" style="text-align:center;">
@@ -2582,18 +2561,6 @@
 
     (function() {
       'use strict';
-
-      /* ========================================
-         NAVBAR SCROLL — TRANSPARENT TO WHITE
-         ======================================== */
-      var navbar = document.getElementById('navbar');
-      window.addEventListener('scroll', function() {
-        if (window.scrollY > 80) {
-          navbar.classList.add('scrolled');
-        } else {
-          navbar.classList.remove('scrolled');
-        }
-      });
 
       /* ========================================
          MOBILE MENU TOGGLE
