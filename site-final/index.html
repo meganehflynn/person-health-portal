@@ -526,7 +526,7 @@
       display: flex;
       gap: 32px;
       justify-content: center;
-      align-items: flex-start;
+      align-items: stretch;
       flex-wrap: wrap;
     }
 
@@ -541,6 +541,8 @@
       border: 1px solid var(--border);
       transition: transform 0.4s, box-shadow 0.4s;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     .platform-card:nth-child(2) {
@@ -589,6 +591,7 @@
       font-size: 1.05rem;
       color: var(--text-mid);
       line-height: 1.7;
+      flex: 1;
     }
 
     .platform-card-tag {
