@@ -450,17 +450,15 @@
     .adv-masonry {
       max-width: 1000px;
       margin: 0 auto;
-      columns: 2;
-      column-gap: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
     }
 
     .adv-masonry-card {
-      break-inside: avoid;
-      -webkit-column-break-inside: avoid;
       background: var(--white);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
-      margin-bottom: 32px;
       overflow: hidden;
       transition: transform 0.3s, box-shadow 0.3s;
     }
@@ -499,7 +497,7 @@
     }
 
     .adv-masonry-card--span {
-      column-span: all;
+      grid-column: 1 / -1;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
@@ -1704,7 +1702,7 @@
       }
 
       .adv-masonry {
-        columns: 1;
+        grid-template-columns: 1fr;
       }
 
       .platform-card {
@@ -1965,23 +1963,14 @@
         <h2 class="section-title">Why Person Health</h2>
       </div>
       <div class="adv-masonry">
-        <!-- Col 1: Multi-Modal (tall) then Clinical Validation -->
-        <div class="adv-masonry-card adv-masonry-card--tall fade-in">
+        <!-- Row 1 -->
+        <div class="adv-masonry-card fade-in">
           <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80" alt="Multi-modal diagnostics">
           <div class="adv-masonry-body">
             <h4>Multi-Modal Diagnostics</h4>
             <p>Combining breath biomarkers and blood molecular fingerprinting into a single unified platform. No other company integrates these modalities with longitudinal AI analysis at this scale.</p>
           </div>
         </div>
-        <!-- Col 2: IP Protection then Lab Infrastructure (tall) -->
-        <div class="adv-masonry-card fade-in">
-          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt="IP protection">
-          <div class="adv-masonry-body">
-            <h4>IP Protection</h4>
-            <p>40+ patents filed across breath diagnostics, molecular analysis, and AI/ML algorithms. A defensible moat that deepens with every data point collected.</p>
-          </div>
-        </div>
-        <!-- Back to Col 1 -->
         <div class="adv-masonry-card fade-in">
           <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80" alt="Clinical validation">
           <div class="adv-masonry-body">
@@ -1989,12 +1978,19 @@
             <p>Partnerships with the world's leading academic medical centers and research institutions. Active VERITY Study. Real clinical evidence backing every claim.</p>
           </div>
         </div>
-        <!-- Back to Col 2 -->
-        <div class="adv-masonry-card adv-masonry-card--tall fade-in">
+        <!-- Row 2 -->
+        <div class="adv-masonry-card fade-in">
+          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt="IP protection">
+          <div class="adv-masonry-body">
+            <h4>IP Protection</h4>
+            <p>40+ patents filed across breath diagnostics, molecular analysis, and AI/ML algorithms. A defensible moat that deepens with every data point collected.</p>
+          </div>
+        </div>
+        <div class="adv-masonry-card fade-in">
           <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80" alt="Lab infrastructure">
           <div class="adv-masonry-body">
             <h4>Lab Infrastructure</h4>
-            <p>Exclusive partnership with Molecular Testing Labs (MTL) — a CLIA/CAP-certified reference lab processing 100K+ tests per month across 70+ assays. Nationwide payor coverage and institutional-grade infrastructure without the capital burden of ownership.</p>
+            <p>Exclusive partnership with Molecular Testing Labs (MTL) — a CLIA/CAP-certified reference lab processing 100K+ tests per month across 70+ assays. Nationwide payor coverage without the capital burden of ownership.</p>
           </div>
         </div>
         <!-- Spanning full width -->
